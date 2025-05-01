@@ -1,0 +1,973 @@
+2025-04-24 15:54:14,254 - __main__ - INFO - === Starting Multi-Ethnic Spatial MoE Model Evaluation ===
+2025-04-24 15:54:14,255 - __main__ - INFO - Arguments: Namespace(data_dir='./data', spatial_dir='./spatial_data', global_params_path='./data/global_parameters.json', da_coordinates_path='./data/toronto_da.csv', scaler='standard', batch_size=64, attention_heads=6, hidden_dim_1_base=27, hidden_dim_2_base=11, hidden_dim_3_base=4, coord_embed_base=7, dropout_rate=0.11549007998447319, colonization_threshold=0.12211010989323141, colonization_expert_weight=0.5561910237863912, colonization_weight=4.013156586009125, jump_threshold=76.02602681139794, jump_expert_weight=0.5709098241179948, jump_weight=8.428747610454728, decline_threshold=75.54437608969272, decline_expert_weight=0.7488347084633729, decline_weight=6.361538367632025, pde_expert_weight=0.529750818372629, pde_weight=5.172326697890094, learning_rate=0.0005555268811326451, weight_decay=0.0005639821283459794, log_space=False, model_path='./model/model.pt', predictions_path='./predictions/model_evaluation_predictions.csv', metrics_dir='./metrics/evaluation', device='cuda')
+2025-04-24 15:54:14,267 - __main__ - INFO - Loaded global parameters from ./data/global_parameters.json: {'K': 0.046942830571135886, 'sigma_squared': 3.5911050665737987, 'alpha_0': 0.5667213663794652, 'beta_0': 3.3373053296446606}
+2025-04-24 15:54:14,283 - __main__ - INFO - Loaded DA coordinates from ./data/toronto_da.csv
+2025-04-24 15:54:14,353 - csrn.data_loader.spatial_data_loader - INFO - Loaded walking matrix with shape (3742, 3742)
+2025-04-24 15:54:14,423 - csrn.data_loader.spatial_data_loader - INFO - Loaded transit matrix with shape (3742, 3742)
+2025-04-24 15:54:14,498 - csrn.data_loader.spatial_data_loader - INFO - Loaded proximity matrix with shape (3742, 3742)
+2025-04-24 15:54:14,540 - csrn.data_loader.spatial_data_loader - INFO - Loaded DA info with 3742 entries
+2025-04-24 15:54:14,545 - csrn.data_loader.spatial_data_loader - INFO - Loading multi-ethnic data files...
+2025-04-24 15:54:14,593 - csrn.data_loader.spatial_data_loader - INFO - Loaded train_features: 2236 rows
+2025-04-24 15:54:14,603 - csrn.data_loader.spatial_data_loader - INFO - Loaded train_pop_2001: 2236 rows
+2025-04-24 15:54:14,603 - csrn.data_loader.spatial_data_loader - INFO -   - Contains 5 ethnicities: ['China', 'India', 'Philippines', 'Portugal', 'Sri Lanka']
+2025-04-24 15:54:14,610 - csrn.data_loader.spatial_data_loader - INFO - Loaded train_pop_2006: 2236 rows
+2025-04-24 15:54:14,611 - csrn.data_loader.spatial_data_loader - INFO -   - Contains 5 ethnicities: ['China', 'India', 'Philippines', 'Portugal', 'Sri Lanka']
+2025-04-24 15:54:14,630 - csrn.data_loader.spatial_data_loader - INFO - Loaded val_features: 745 rows
+2025-04-24 15:54:14,641 - csrn.data_loader.spatial_data_loader - INFO - Loaded val_pop_2001: 745 rows
+2025-04-24 15:54:14,641 - csrn.data_loader.spatial_data_loader - INFO -   - Contains 5 ethnicities: ['China', 'India', 'Philippines', 'Portugal', 'Sri Lanka']
+2025-04-24 15:54:14,651 - csrn.data_loader.spatial_data_loader - INFO - Loaded val_pop_2006: 745 rows
+2025-04-24 15:54:14,651 - csrn.data_loader.spatial_data_loader - INFO -   - Contains 5 ethnicities: ['China', 'India', 'Philippines', 'Portugal', 'Sri Lanka']
+2025-04-24 15:54:14,671 - csrn.data_loader.spatial_data_loader - INFO - Loaded test_features: 746 rows
+2025-04-24 15:54:14,679 - csrn.data_loader.spatial_data_loader - INFO - Loaded test_pop_2001: 746 rows
+2025-04-24 15:54:14,680 - csrn.data_loader.spatial_data_loader - INFO -   - Contains 5 ethnicities: ['China', 'India', 'Philippines', 'Portugal', 'Sri Lanka']
+2025-04-24 15:54:14,687 - csrn.data_loader.spatial_data_loader - INFO - Loaded test_pop_2006: 746 rows
+2025-04-24 15:54:14,687 - csrn.data_loader.spatial_data_loader - INFO -   - Contains 5 ethnicities: ['China', 'India', 'Philippines', 'Portugal', 'Sri Lanka']
+2025-04-24 15:54:14,687 - csrn.data_loader.spatial_data_loader - INFO - Creating multi-ethnic spatially-aware DataLoaders...
+2025-04-24 15:54:14,687 - csrn.data_loader.spatial_data_loader - INFO - Preprocessing features...
+2025-04-24 15:54:14,708 - csrn.data_loader.spatial_data_loader - INFO - Feature preprocessing complete.
+2025-04-24 15:54:14,713 - csrn.data_loader.spatial_data_loader - INFO - Loaded data with 5 ethnicities: ['China', 'India', 'Philippines', 'Portugal', 'Sri Lanka']
+2025-04-24 15:54:14,997 - csrn.data_loader.spatial_data_loader - INFO - Loaded coordinates for 2236 DAs
+2025-04-24 15:54:14,999 - csrn.data_loader.spatial_data_loader - INFO - Loaded data with 5 ethnicities: ['China', 'India', 'Philippines', 'Portugal', 'Sri Lanka']
+2025-04-24 15:54:15,087 - csrn.data_loader.spatial_data_loader - INFO - Loaded coordinates for 745 DAs
+2025-04-24 15:54:15,089 - csrn.data_loader.spatial_data_loader - INFO - Loaded data with 5 ethnicities: ['China', 'India', 'Philippines', 'Portugal', 'Sri Lanka']
+2025-04-24 15:54:15,183 - csrn.data_loader.spatial_data_loader - INFO - Loaded coordinates for 746 DAs
+2025-04-24 15:54:15,183 - csrn.data_loader.spatial_data_loader - INFO - Created DataLoaders: Train size=2236, Val size=745, Test size=746
+2025-04-24 15:54:15,183 - csrn.data_loader.spatial_data_loader - INFO - Number of ethnicities: 5
+2025-04-24 15:54:15,184 - __main__ - INFO - Processing 5 ethnicities: ['China', 'India', 'Philippines', 'Portugal', 'Sri Lanka']
+2025-04-24 15:54:15,184 - __main__ - INFO - Loading pretrained model from ./model/model.pt
+2025-04-24 15:54:15,263 - __main__ - INFO - Creating model with the same architecture
+2025-04-24 15:54:15,263 - __main__ - ERROR - Error during evaluation: MultiEthnicSpatialMoEPredictor.__init__() got an unexpected keyword argument 'colonization_weight'
+2025-04-24 15:54:15,265 - __main__ - ERROR - Traceback (most recent call last):
+  File "D:\Navid\Study\Ph.D 2\Thesis\3 - third nature\new_approach\spatial_moe_ind_8_all_eth_2001\spatial_test_model.py", line 130, in main
+    model = MultiEthnicSpatialMoEPredictor(
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+TypeError: MultiEthnicSpatialMoEPredictor.__init__() got an unexpected keyword argument 'colonization_weight'
+
+2025-04-24 15:54:15,265 - __main__ - INFO - === Multi-Ethnic Spatial MoE Model Evaluation Completed ===
+2025-04-24 15:55:06,675 - __main__ - INFO - === Starting Multi-Ethnic Spatial MoE Model Evaluation ===
+2025-04-24 15:55:06,675 - __main__ - INFO - Arguments: Namespace(data_dir='./data', spatial_dir='./spatial_data', global_params_path='./data/global_parameters.json', da_coordinates_path='./data/toronto_da.csv', scaler='standard', batch_size=64, attention_heads=6, hidden_dim_1_base=27, hidden_dim_2_base=11, hidden_dim_3_base=4, coord_embed_base=7, dropout_rate=0.11549007998447319, colonization_threshold=0.12211010989323141, colonization_expert_weight=0.5561910237863912, colonization_weight=4.013156586009125, jump_threshold=76.02602681139794, jump_expert_weight=0.5709098241179948, jump_weight=8.428747610454728, decline_threshold=75.54437608969272, decline_expert_weight=0.7488347084633729, decline_weight=6.361538367632025, pde_expert_weight=0.529750818372629, pde_weight=5.172326697890094, learning_rate=0.0005555268811326451, weight_decay=0.0005639821283459794, log_space=False, model_path='./model/model.pt', predictions_path='./predictions/model_evaluation_predictions.csv', metrics_dir='./metrics/evaluation', device='cuda')
+2025-04-24 15:55:06,676 - __main__ - INFO - Loaded global parameters from ./data/global_parameters.json: {'K': 0.046942830571135886, 'sigma_squared': 3.5911050665737987, 'alpha_0': 0.5667213663794652, 'beta_0': 3.3373053296446606}
+2025-04-24 15:55:06,681 - __main__ - INFO - Loaded DA coordinates from ./data/toronto_da.csv
+2025-04-24 15:55:06,714 - csrn.data_loader.spatial_data_loader - INFO - Loaded walking matrix with shape (3742, 3742)
+2025-04-24 15:55:06,746 - csrn.data_loader.spatial_data_loader - INFO - Loaded transit matrix with shape (3742, 3742)
+2025-04-24 15:55:06,778 - csrn.data_loader.spatial_data_loader - INFO - Loaded proximity matrix with shape (3742, 3742)
+2025-04-24 15:55:06,782 - csrn.data_loader.spatial_data_loader - INFO - Loaded DA info with 3742 entries
+2025-04-24 15:55:06,782 - csrn.data_loader.spatial_data_loader - INFO - Loading multi-ethnic data files...
+2025-04-24 15:55:06,826 - csrn.data_loader.spatial_data_loader - INFO - Loaded train_features: 2236 rows
+2025-04-24 15:55:06,828 - csrn.data_loader.spatial_data_loader - INFO - Loaded train_pop_2001: 2236 rows
+2025-04-24 15:55:06,828 - csrn.data_loader.spatial_data_loader - INFO -   - Contains 5 ethnicities: ['China', 'India', 'Philippines', 'Portugal', 'Sri Lanka']
+2025-04-24 15:55:06,829 - csrn.data_loader.spatial_data_loader - INFO - Loaded train_pop_2006: 2236 rows
+2025-04-24 15:55:06,829 - csrn.data_loader.spatial_data_loader - INFO -   - Contains 5 ethnicities: ['China', 'India', 'Philippines', 'Portugal', 'Sri Lanka']
+2025-04-24 15:55:06,844 - csrn.data_loader.spatial_data_loader - INFO - Loaded val_features: 745 rows
+2025-04-24 15:55:06,845 - csrn.data_loader.spatial_data_loader - INFO - Loaded val_pop_2001: 745 rows
+2025-04-24 15:55:06,845 - csrn.data_loader.spatial_data_loader - INFO -   - Contains 5 ethnicities: ['China', 'India', 'Philippines', 'Portugal', 'Sri Lanka']
+2025-04-24 15:55:06,846 - csrn.data_loader.spatial_data_loader - INFO - Loaded val_pop_2006: 745 rows
+2025-04-24 15:55:06,847 - csrn.data_loader.spatial_data_loader - INFO -   - Contains 5 ethnicities: ['China', 'India', 'Philippines', 'Portugal', 'Sri Lanka']
+2025-04-24 15:55:06,860 - csrn.data_loader.spatial_data_loader - INFO - Loaded test_features: 746 rows
+2025-04-24 15:55:06,861 - csrn.data_loader.spatial_data_loader - INFO - Loaded test_pop_2001: 746 rows
+2025-04-24 15:55:06,862 - csrn.data_loader.spatial_data_loader - INFO -   - Contains 5 ethnicities: ['China', 'India', 'Philippines', 'Portugal', 'Sri Lanka']
+2025-04-24 15:55:06,863 - csrn.data_loader.spatial_data_loader - INFO - Loaded test_pop_2006: 746 rows
+2025-04-24 15:55:06,863 - csrn.data_loader.spatial_data_loader - INFO -   - Contains 5 ethnicities: ['China', 'India', 'Philippines', 'Portugal', 'Sri Lanka']
+2025-04-24 15:55:06,863 - csrn.data_loader.spatial_data_loader - INFO - Creating multi-ethnic spatially-aware DataLoaders...
+2025-04-24 15:55:06,863 - csrn.data_loader.spatial_data_loader - INFO - Preprocessing features...
+2025-04-24 15:55:06,880 - csrn.data_loader.spatial_data_loader - INFO - Feature preprocessing complete.
+2025-04-24 15:55:06,883 - csrn.data_loader.spatial_data_loader - INFO - Loaded data with 5 ethnicities: ['China', 'India', 'Philippines', 'Portugal', 'Sri Lanka']
+2025-04-24 15:55:07,143 - csrn.data_loader.spatial_data_loader - INFO - Loaded coordinates for 2236 DAs
+2025-04-24 15:55:07,144 - csrn.data_loader.spatial_data_loader - INFO - Loaded data with 5 ethnicities: ['China', 'India', 'Philippines', 'Portugal', 'Sri Lanka']
+2025-04-24 15:55:07,238 - csrn.data_loader.spatial_data_loader - INFO - Loaded coordinates for 745 DAs
+2025-04-24 15:55:07,239 - csrn.data_loader.spatial_data_loader - INFO - Loaded data with 5 ethnicities: ['China', 'India', 'Philippines', 'Portugal', 'Sri Lanka']
+2025-04-24 15:55:07,324 - csrn.data_loader.spatial_data_loader - INFO - Loaded coordinates for 746 DAs
+2025-04-24 15:55:07,326 - csrn.data_loader.spatial_data_loader - INFO - Created DataLoaders: Train size=2236, Val size=745, Test size=746
+2025-04-24 15:55:07,326 - csrn.data_loader.spatial_data_loader - INFO - Number of ethnicities: 5
+2025-04-24 15:55:07,327 - __main__ - INFO - Processing 5 ethnicities: ['China', 'India', 'Philippines', 'Portugal', 'Sri Lanka']
+2025-04-24 15:55:07,327 - __main__ - INFO - Loading pretrained model from ./model/model.pt
+2025-04-24 15:55:07,364 - __main__ - INFO - Creating model with the same architecture
+2025-04-24 15:55:07,421 - spatial_moe_trainer - INFO - Multi-Ethnic Spatial MoE model initialized on cuda
+2025-04-24 15:55:07,421 - spatial_moe_trainer - INFO - Model will predict 5 ethnicities: ['China', 'India', 'Philippines', 'Portugal', 'Sri Lanka']
+2025-04-24 15:55:07,422 - __main__ - INFO - Evaluating model on test set...
+2025-04-24 15:55:09,514 - __main__ - INFO - Test MSE: 439.3459
+2025-04-24 15:55:09,515 - __main__ - INFO - Test MAE: 9.9413
+2025-04-24 15:55:09,515 - __main__ - INFO - Test R²: 0.7610
+2025-04-24 15:55:09,515 - __main__ - INFO - Ethnicity-specific metrics:
+2025-04-24 15:55:09,515 - __main__ - INFO -   China - MSE: 711.5272, MAE: 13.7089, R²: 0.8347
+2025-04-24 15:55:09,515 - __main__ - INFO -   India - MSE: 674.3582, MAE: 11.2146, R²: 0.6295
+2025-04-24 15:55:09,515 - __main__ - INFO -   Philippines - MSE: 305.3901, MAE: 9.7421, R²: 0.7141
+2025-04-24 15:55:09,515 - __main__ - INFO -   Portugal - MSE: 140.3549, MAE: 6.4130, R²: 0.8476
+2025-04-24 15:55:09,515 - __main__ - INFO -   Sri Lanka - MSE: 365.0990, MAE: 8.6280, R²: 0.5566
+2025-04-24 15:55:09,515 - __main__ - INFO - Colonization - MSE: 182.0331, MAE: 6.5028, Count: 2641
+2025-04-24 15:55:09,515 - __main__ - INFO - Jump - MSE: 22238.2344, MAE: 121.8138, Count: 12
+2025-04-24 15:55:09,515 - __main__ - INFO - Decline - MSE: 707.3097, MAE: 15.0495, Count: 952
+2025-04-24 15:55:09,515 - __main__ - INFO - Pde - MSE: 1212.7120, MAE: 27.1575, Count: 96
+2025-04-24 15:55:09,516 - __main__ - INFO - Regular - MSE: 3495.6147, MAE: 52.1145, Count: 29
+2025-04-24 15:55:09,519 - spatial_moe_trainer - INFO - Test overall metrics saved to ./metrics/evaluation\test_overall_metrics.csv
+2025-04-24 15:55:09,523 - spatial_moe_trainer - INFO - Test ethnicity metrics saved to ./metrics/evaluation\test_ethnicity_metrics.csv
+2025-04-24 15:55:09,525 - spatial_moe_trainer - INFO - Test case metrics saved to ./metrics/evaluation\test_case_metrics.csv
+2025-04-24 15:55:09,526 - __main__ - INFO - Test metrics saved to ./metrics/evaluation
+2025-04-24 15:55:09,526 - __main__ - INFO - Generating predictions for test set...
+2025-04-24 15:55:11,241 - __main__ - INFO - Predictions saved to ./predictions/model_evaluation_predictions.csv
+2025-04-24 15:55:11,242 - __main__ - INFO - === Multi-Ethnic Spatial MoE Model Evaluation Completed ===
+2025-04-28 15:25:23,793 - __main__ - INFO - === Starting Multi-Ethnic Spatial MoE Model Evaluation ===
+2025-04-28 15:25:23,795 - __main__ - INFO - Arguments: Namespace(data_dir='./data', spatial_dir='./spatial_data', global_params_path='./data/global_parameters.json', da_coordinates_path='./data/toronto_da.csv', scaler='standard', batch_size=64, attention_heads=6, hidden_dim_1_base=27, hidden_dim_2_base=11, hidden_dim_3_base=4, coord_embed_base=7, dropout_rate=0.11549007998447319, colonization_threshold=0.12211010989323141, colonization_expert_weight=0.5561910237863912, colonization_weight=4.013156586009125, jump_threshold=76.02602681139794, jump_expert_weight=0.5709098241179948, jump_weight=8.428747610454728, decline_threshold=75.54437608969272, decline_expert_weight=0.7488347084633729, decline_weight=6.361538367632025, pde_expert_weight=0.529750818372629, pde_weight=5.172326697890094, learning_rate=0.0005555268811326451, weight_decay=0.0005639821283459794, log_space=False, model_path='./model/model.pt', predictions_path='./predictions/model_evaluation_predictions.csv', metrics_dir='./metrics/evaluation', device='cuda')
+2025-04-28 15:25:23,802 - __main__ - INFO - Loaded global parameters from ./data/global_parameters.json: {'K': 0.046942830571135886, 'sigma_squared': 3.5911050665737987, 'alpha_0': 0.5667213663794652, 'beta_0': 3.3373053296446606}
+2025-04-28 15:25:23,817 - __main__ - INFO - Loaded DA coordinates from ./data/toronto_da.csv
+2025-04-28 15:25:23,919 - csrn.data_loader.spatial_data_loader - INFO - Loaded walking matrix with shape (3742, 3742)
+2025-04-28 15:25:24,017 - csrn.data_loader.spatial_data_loader - INFO - Loaded transit matrix with shape (3742, 3742)
+2025-04-28 15:25:24,112 - csrn.data_loader.spatial_data_loader - INFO - Loaded proximity matrix with shape (3742, 3742)
+2025-04-28 15:25:24,136 - csrn.data_loader.spatial_data_loader - INFO - Loaded DA info with 3742 entries
+2025-04-28 15:25:24,137 - csrn.data_loader.spatial_data_loader - INFO - Loading multi-ethnic data files...
+2025-04-28 15:25:24,182 - csrn.data_loader.spatial_data_loader - INFO - Loaded train_features: 2236 rows
+2025-04-28 15:25:24,192 - csrn.data_loader.spatial_data_loader - INFO - Loaded train_pop_2001: 2236 rows
+2025-04-28 15:25:24,193 - csrn.data_loader.spatial_data_loader - INFO -   - Contains 5 ethnicities: ['China', 'India', 'Philippines', 'Portugal', 'Sri Lanka']
+2025-04-28 15:25:24,209 - csrn.data_loader.spatial_data_loader - INFO - Loaded train_pop_2006: 2236 rows
+2025-04-28 15:25:24,210 - csrn.data_loader.spatial_data_loader - INFO -   - Contains 5 ethnicities: ['China', 'India', 'Philippines', 'Portugal', 'Sri Lanka']
+2025-04-28 15:25:24,230 - csrn.data_loader.spatial_data_loader - INFO - Loaded val_features: 745 rows
+2025-04-28 15:25:24,247 - csrn.data_loader.spatial_data_loader - INFO - Loaded val_pop_2001: 745 rows
+2025-04-28 15:25:24,247 - csrn.data_loader.spatial_data_loader - INFO -   - Contains 5 ethnicities: ['China', 'India', 'Philippines', 'Portugal', 'Sri Lanka']
+2025-04-28 15:25:24,257 - csrn.data_loader.spatial_data_loader - INFO - Loaded val_pop_2006: 745 rows
+2025-04-28 15:25:24,257 - csrn.data_loader.spatial_data_loader - INFO -   - Contains 5 ethnicities: ['China', 'India', 'Philippines', 'Portugal', 'Sri Lanka']
+2025-04-28 15:25:24,276 - csrn.data_loader.spatial_data_loader - INFO - Loaded test_features: 746 rows
+2025-04-28 15:25:24,285 - csrn.data_loader.spatial_data_loader - INFO - Loaded test_pop_2001: 746 rows
+2025-04-28 15:25:24,285 - csrn.data_loader.spatial_data_loader - INFO -   - Contains 5 ethnicities: ['China', 'India', 'Philippines', 'Portugal', 'Sri Lanka']
+2025-04-28 15:25:24,296 - csrn.data_loader.spatial_data_loader - INFO - Loaded test_pop_2006: 746 rows
+2025-04-28 15:25:24,297 - csrn.data_loader.spatial_data_loader - INFO -   - Contains 5 ethnicities: ['China', 'India', 'Philippines', 'Portugal', 'Sri Lanka']
+2025-04-28 15:25:24,297 - csrn.data_loader.spatial_data_loader - INFO - Creating multi-ethnic spatially-aware DataLoaders...
+2025-04-28 15:25:24,297 - csrn.data_loader.spatial_data_loader - INFO - Preprocessing features...
+2025-04-28 15:25:24,333 - csrn.data_loader.spatial_data_loader - INFO - Feature preprocessing complete.
+2025-04-28 15:25:24,340 - csrn.data_loader.spatial_data_loader - INFO - Loaded data with 5 ethnicities: ['China', 'India', 'Philippines', 'Portugal', 'Sri Lanka']
+2025-04-28 15:25:24,550 - csrn.data_loader.spatial_data_loader - INFO - Loaded coordinates for 2236 DAs
+2025-04-28 15:25:24,552 - csrn.data_loader.spatial_data_loader - INFO - Loaded data with 5 ethnicities: ['China', 'India', 'Philippines', 'Portugal', 'Sri Lanka']
+2025-04-28 15:25:24,621 - csrn.data_loader.spatial_data_loader - INFO - Loaded coordinates for 745 DAs
+2025-04-28 15:25:24,621 - csrn.data_loader.spatial_data_loader - INFO - Loaded data with 5 ethnicities: ['China', 'India', 'Philippines', 'Portugal', 'Sri Lanka']
+2025-04-28 15:25:24,689 - csrn.data_loader.spatial_data_loader - INFO - Loaded coordinates for 746 DAs
+2025-04-28 15:25:24,693 - csrn.data_loader.spatial_data_loader - INFO - Created DataLoaders: Train size=2236, Val size=745, Test size=746
+2025-04-28 15:25:24,693 - csrn.data_loader.spatial_data_loader - INFO - Number of ethnicities: 5
+2025-04-28 15:25:24,695 - __main__ - INFO - Processing 5 ethnicities: ['China', 'India', 'Philippines', 'Portugal', 'Sri Lanka']
+2025-04-28 15:25:24,695 - __main__ - INFO - Loading pretrained model from ./model/model.pt
+2025-04-28 15:25:24,761 - __main__ - INFO - Creating model with the same architecture
+2025-04-28 15:25:24,761 - __main__ - ERROR - Error during evaluation: 'colonization_expert_weight'
+2025-04-28 15:25:24,762 - __main__ - ERROR - Traceback (most recent call last):
+  File "D:\Navid\Study\Ph.D 2\Thesis\3 - third nature\new_approach\spatial_moe_ind_8_all_eth_2001\spatial_test_model.py", line 139, in main
+    colonization_expert_weight=model_config['colonization_expert_weight'],
+                               ~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+KeyError: 'colonization_expert_weight'
+
+2025-04-28 15:25:24,762 - __main__ - INFO - === Multi-Ethnic Spatial MoE Model Evaluation Completed ===
+2025-04-28 15:25:44,874 - __main__ - INFO - === Starting Multi-Ethnic Spatial MoE Model Evaluation ===
+2025-04-28 15:25:44,875 - __main__ - INFO - Arguments: Namespace(data_dir='./data', spatial_dir='./spatial_data', global_params_path='./data/global_parameters.json', da_coordinates_path='./data/toronto_da.csv', scaler='standard', batch_size=64, attention_heads=6, hidden_dim_1_base=27, hidden_dim_2_base=11, hidden_dim_3_base=4, coord_embed_base=7, dropout_rate=0.11549007998447319, colonization_threshold=0.12211010989323141, colonization_expert_weight=0.5561910237863912, colonization_weight=4.013156586009125, jump_threshold=76.02602681139794, jump_expert_weight=0.5709098241179948, jump_weight=8.428747610454728, decline_threshold=75.54437608969272, decline_expert_weight=0.7488347084633729, decline_weight=6.361538367632025, pde_expert_weight=0.529750818372629, pde_weight=5.172326697890094, learning_rate=0.0005555268811326451, weight_decay=0.0005639821283459794, log_space=False, model_path='./model/model.pt', predictions_path='./predictions/model_evaluation_predictions.csv', metrics_dir='./metrics/evaluation', device='cuda')
+2025-04-28 15:25:44,875 - __main__ - INFO - Loaded global parameters from ./data/global_parameters.json: {'K': 0.046942830571135886, 'sigma_squared': 3.5911050665737987, 'alpha_0': 0.5667213663794652, 'beta_0': 3.3373053296446606}
+2025-04-28 15:25:44,880 - __main__ - INFO - Loaded DA coordinates from ./data/toronto_da.csv
+2025-04-28 15:25:44,926 - csrn.data_loader.spatial_data_loader - INFO - Loaded walking matrix with shape (3742, 3742)
+2025-04-28 15:25:44,971 - csrn.data_loader.spatial_data_loader - INFO - Loaded transit matrix with shape (3742, 3742)
+2025-04-28 15:25:45,019 - csrn.data_loader.spatial_data_loader - INFO - Loaded proximity matrix with shape (3742, 3742)
+2025-04-28 15:25:45,024 - csrn.data_loader.spatial_data_loader - INFO - Loaded DA info with 3742 entries
+2025-04-28 15:25:45,025 - csrn.data_loader.spatial_data_loader - INFO - Loading multi-ethnic data files...
+2025-04-28 15:25:45,065 - csrn.data_loader.spatial_data_loader - INFO - Loaded train_features: 2236 rows
+2025-04-28 15:25:45,066 - csrn.data_loader.spatial_data_loader - INFO - Loaded train_pop_2001: 2236 rows
+2025-04-28 15:25:45,066 - csrn.data_loader.spatial_data_loader - INFO -   - Contains 5 ethnicities: ['China', 'India', 'Philippines', 'Portugal', 'Sri Lanka']
+2025-04-28 15:25:45,068 - csrn.data_loader.spatial_data_loader - INFO - Loaded train_pop_2006: 2236 rows
+2025-04-28 15:25:45,068 - csrn.data_loader.spatial_data_loader - INFO -   - Contains 5 ethnicities: ['China', 'India', 'Philippines', 'Portugal', 'Sri Lanka']
+2025-04-28 15:25:45,081 - csrn.data_loader.spatial_data_loader - INFO - Loaded val_features: 745 rows
+2025-04-28 15:25:45,081 - csrn.data_loader.spatial_data_loader - INFO - Loaded val_pop_2001: 745 rows
+2025-04-28 15:25:45,082 - csrn.data_loader.spatial_data_loader - INFO -   - Contains 5 ethnicities: ['China', 'India', 'Philippines', 'Portugal', 'Sri Lanka']
+2025-04-28 15:25:45,083 - csrn.data_loader.spatial_data_loader - INFO - Loaded val_pop_2006: 745 rows
+2025-04-28 15:25:45,083 - csrn.data_loader.spatial_data_loader - INFO -   - Contains 5 ethnicities: ['China', 'India', 'Philippines', 'Portugal', 'Sri Lanka']
+2025-04-28 15:25:45,096 - csrn.data_loader.spatial_data_loader - INFO - Loaded test_features: 746 rows
+2025-04-28 15:25:45,098 - csrn.data_loader.spatial_data_loader - INFO - Loaded test_pop_2001: 746 rows
+2025-04-28 15:25:45,098 - csrn.data_loader.spatial_data_loader - INFO -   - Contains 5 ethnicities: ['China', 'India', 'Philippines', 'Portugal', 'Sri Lanka']
+2025-04-28 15:25:45,099 - csrn.data_loader.spatial_data_loader - INFO - Loaded test_pop_2006: 746 rows
+2025-04-28 15:25:45,099 - csrn.data_loader.spatial_data_loader - INFO -   - Contains 5 ethnicities: ['China', 'India', 'Philippines', 'Portugal', 'Sri Lanka']
+2025-04-28 15:25:45,099 - csrn.data_loader.spatial_data_loader - INFO - Creating multi-ethnic spatially-aware DataLoaders...
+2025-04-28 15:25:45,100 - csrn.data_loader.spatial_data_loader - INFO - Preprocessing features...
+2025-04-28 15:25:45,118 - csrn.data_loader.spatial_data_loader - INFO - Feature preprocessing complete.
+2025-04-28 15:25:45,122 - csrn.data_loader.spatial_data_loader - INFO - Loaded data with 5 ethnicities: ['China', 'India', 'Philippines', 'Portugal', 'Sri Lanka']
+2025-04-28 15:25:45,324 - csrn.data_loader.spatial_data_loader - INFO - Loaded coordinates for 2236 DAs
+2025-04-28 15:25:45,327 - csrn.data_loader.spatial_data_loader - INFO - Loaded data with 5 ethnicities: ['China', 'India', 'Philippines', 'Portugal', 'Sri Lanka']
+2025-04-28 15:25:45,396 - csrn.data_loader.spatial_data_loader - INFO - Loaded coordinates for 745 DAs
+2025-04-28 15:25:45,398 - csrn.data_loader.spatial_data_loader - INFO - Loaded data with 5 ethnicities: ['China', 'India', 'Philippines', 'Portugal', 'Sri Lanka']
+2025-04-28 15:25:45,493 - csrn.data_loader.spatial_data_loader - INFO - Loaded coordinates for 746 DAs
+2025-04-28 15:25:45,494 - csrn.data_loader.spatial_data_loader - INFO - Created DataLoaders: Train size=2236, Val size=745, Test size=746
+2025-04-28 15:25:45,494 - csrn.data_loader.spatial_data_loader - INFO - Number of ethnicities: 5
+2025-04-28 15:25:45,495 - __main__ - INFO - Processing 5 ethnicities: ['China', 'India', 'Philippines', 'Portugal', 'Sri Lanka']
+2025-04-28 15:25:45,496 - __main__ - INFO - Loading pretrained model from ./model/model.pt
+2025-04-28 15:25:45,526 - __main__ - INFO - Creating model with the same architecture
+2025-04-28 15:25:45,526 - __main__ - ERROR - Error during evaluation: 'colonization_expert_weight'
+2025-04-28 15:25:45,527 - __main__ - ERROR - Traceback (most recent call last):
+  File "D:\Navid\Study\Ph.D 2\Thesis\3 - third nature\new_approach\spatial_moe_ind_8_all_eth_2001\spatial_test_model.py", line 139, in main
+    colonization_expert_weight=model_config['colonization_expert_weight'],
+                               ~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+KeyError: 'colonization_expert_weight'
+
+2025-04-28 15:25:45,527 - __main__ - INFO - === Multi-Ethnic Spatial MoE Model Evaluation Completed ===
+2025-04-28 15:26:07,740 - __main__ - INFO - === Starting Multi-Ethnic Spatial MoE Model Evaluation ===
+2025-04-28 15:26:07,740 - __main__ - INFO - Arguments: Namespace(data_dir='./data', spatial_dir='./spatial_data', global_params_path='./data/global_parameters.json', da_coordinates_path='./data/toronto_da.csv', scaler='standard', batch_size=64, attention_heads=6, hidden_dim_1_base=27, hidden_dim_2_base=11, hidden_dim_3_base=4, coord_embed_base=7, dropout_rate=0.11549007998447319, colonization_threshold=0.12211010989323141, colonization_expert_weight=0.5561910237863912, colonization_weight=4.013156586009125, jump_threshold=76.02602681139794, jump_expert_weight=0.5709098241179948, jump_weight=8.428747610454728, decline_threshold=75.54437608969272, decline_expert_weight=0.7488347084633729, decline_weight=6.361538367632025, pde_expert_weight=0.529750818372629, pde_weight=5.172326697890094, learning_rate=0.0005555268811326451, weight_decay=0.0005639821283459794, log_space=False, model_path='./model/model.pt', predictions_path='./predictions/model_evaluation_predictions.csv', metrics_dir='./metrics/evaluation', device='cuda')
+2025-04-28 15:26:07,741 - __main__ - INFO - Loaded global parameters from ./data/global_parameters.json: {'K': 0.046942830571135886, 'sigma_squared': 3.5911050665737987, 'alpha_0': 0.5667213663794652, 'beta_0': 3.3373053296446606}
+2025-04-28 15:26:07,746 - __main__ - INFO - Loaded DA coordinates from ./data/toronto_da.csv
+2025-04-28 15:26:07,783 - csrn.data_loader.spatial_data_loader - INFO - Loaded walking matrix with shape (3742, 3742)
+2025-04-28 15:26:07,822 - csrn.data_loader.spatial_data_loader - INFO - Loaded transit matrix with shape (3742, 3742)
+2025-04-28 15:26:07,862 - csrn.data_loader.spatial_data_loader - INFO - Loaded proximity matrix with shape (3742, 3742)
+2025-04-28 15:26:07,866 - csrn.data_loader.spatial_data_loader - INFO - Loaded DA info with 3742 entries
+2025-04-28 15:26:07,867 - csrn.data_loader.spatial_data_loader - INFO - Loading multi-ethnic data files...
+2025-04-28 15:26:07,903 - csrn.data_loader.spatial_data_loader - INFO - Loaded train_features: 2236 rows
+2025-04-28 15:26:07,904 - csrn.data_loader.spatial_data_loader - INFO - Loaded train_pop_2001: 2236 rows
+2025-04-28 15:26:07,904 - csrn.data_loader.spatial_data_loader - INFO -   - Contains 5 ethnicities: ['China', 'India', 'Philippines', 'Portugal', 'Sri Lanka']
+2025-04-28 15:26:07,905 - csrn.data_loader.spatial_data_loader - INFO - Loaded train_pop_2006: 2236 rows
+2025-04-28 15:26:07,906 - csrn.data_loader.spatial_data_loader - INFO -   - Contains 5 ethnicities: ['China', 'India', 'Philippines', 'Portugal', 'Sri Lanka']
+2025-04-28 15:26:07,919 - csrn.data_loader.spatial_data_loader - INFO - Loaded val_features: 745 rows
+2025-04-28 15:26:07,921 - csrn.data_loader.spatial_data_loader - INFO - Loaded val_pop_2001: 745 rows
+2025-04-28 15:26:07,921 - csrn.data_loader.spatial_data_loader - INFO -   - Contains 5 ethnicities: ['China', 'India', 'Philippines', 'Portugal', 'Sri Lanka']
+2025-04-28 15:26:07,922 - csrn.data_loader.spatial_data_loader - INFO - Loaded val_pop_2006: 745 rows
+2025-04-28 15:26:07,922 - csrn.data_loader.spatial_data_loader - INFO -   - Contains 5 ethnicities: ['China', 'India', 'Philippines', 'Portugal', 'Sri Lanka']
+2025-04-28 15:26:07,934 - csrn.data_loader.spatial_data_loader - INFO - Loaded test_features: 746 rows
+2025-04-28 15:26:07,935 - csrn.data_loader.spatial_data_loader - INFO - Loaded test_pop_2001: 746 rows
+2025-04-28 15:26:07,935 - csrn.data_loader.spatial_data_loader - INFO -   - Contains 5 ethnicities: ['China', 'India', 'Philippines', 'Portugal', 'Sri Lanka']
+2025-04-28 15:26:07,936 - csrn.data_loader.spatial_data_loader - INFO - Loaded test_pop_2006: 746 rows
+2025-04-28 15:26:07,937 - csrn.data_loader.spatial_data_loader - INFO -   - Contains 5 ethnicities: ['China', 'India', 'Philippines', 'Portugal', 'Sri Lanka']
+2025-04-28 15:26:07,937 - csrn.data_loader.spatial_data_loader - INFO - Creating multi-ethnic spatially-aware DataLoaders...
+2025-04-28 15:26:07,937 - csrn.data_loader.spatial_data_loader - INFO - Preprocessing features...
+2025-04-28 15:26:07,954 - csrn.data_loader.spatial_data_loader - INFO - Feature preprocessing complete.
+2025-04-28 15:26:07,959 - csrn.data_loader.spatial_data_loader - INFO - Loaded data with 5 ethnicities: ['China', 'India', 'Philippines', 'Portugal', 'Sri Lanka']
+2025-04-28 15:26:08,159 - csrn.data_loader.spatial_data_loader - INFO - Loaded coordinates for 2236 DAs
+2025-04-28 15:26:08,161 - csrn.data_loader.spatial_data_loader - INFO - Loaded data with 5 ethnicities: ['China', 'India', 'Philippines', 'Portugal', 'Sri Lanka']
+2025-04-28 15:26:08,227 - csrn.data_loader.spatial_data_loader - INFO - Loaded coordinates for 745 DAs
+2025-04-28 15:26:08,229 - csrn.data_loader.spatial_data_loader - INFO - Loaded data with 5 ethnicities: ['China', 'India', 'Philippines', 'Portugal', 'Sri Lanka']
+2025-04-28 15:26:08,297 - csrn.data_loader.spatial_data_loader - INFO - Loaded coordinates for 746 DAs
+2025-04-28 15:26:08,297 - csrn.data_loader.spatial_data_loader - INFO - Created DataLoaders: Train size=2236, Val size=745, Test size=746
+2025-04-28 15:26:08,298 - csrn.data_loader.spatial_data_loader - INFO - Number of ethnicities: 5
+2025-04-28 15:26:08,299 - __main__ - INFO - Processing 5 ethnicities: ['China', 'India', 'Philippines', 'Portugal', 'Sri Lanka']
+2025-04-28 15:26:08,300 - __main__ - INFO - Loading pretrained model from ./model/model.pt
+2025-04-28 15:26:08,330 - __main__ - INFO - Creating model with the same architecture
+2025-04-28 15:26:08,331 - __main__ - ERROR - Error during evaluation: 'log_space'
+2025-04-28 15:26:08,331 - __main__ - ERROR - Traceback (most recent call last):
+  File "D:\Navid\Study\Ph.D 2\Thesis\3 - third nature\new_approach\spatial_moe_ind_8_all_eth_2001\spatial_test_model.py", line 142, in main
+    log_space=model_config['log_space'],
+              ~~~~~~~~~~~~^^^^^^^^^^^^^
+KeyError: 'log_space'
+
+2025-04-28 15:26:08,331 - __main__ - INFO - === Multi-Ethnic Spatial MoE Model Evaluation Completed ===
+2025-04-28 15:26:18,817 - __main__ - INFO - === Starting Multi-Ethnic Spatial MoE Model Evaluation ===
+2025-04-28 15:26:18,817 - __main__ - INFO - Arguments: Namespace(data_dir='./data', spatial_dir='./spatial_data', global_params_path='./data/global_parameters.json', da_coordinates_path='./data/toronto_da.csv', scaler='standard', batch_size=64, attention_heads=6, hidden_dim_1_base=27, hidden_dim_2_base=11, hidden_dim_3_base=4, coord_embed_base=7, dropout_rate=0.11549007998447319, colonization_threshold=0.12211010989323141, colonization_expert_weight=0.5561910237863912, colonization_weight=4.013156586009125, jump_threshold=76.02602681139794, jump_expert_weight=0.5709098241179948, jump_weight=8.428747610454728, decline_threshold=75.54437608969272, decline_expert_weight=0.7488347084633729, decline_weight=6.361538367632025, pde_expert_weight=0.529750818372629, pde_weight=5.172326697890094, learning_rate=0.0005555268811326451, weight_decay=0.0005639821283459794, log_space=False, model_path='./model/model.pt', predictions_path='./predictions/model_evaluation_predictions.csv', metrics_dir='./metrics/evaluation', device='cuda')
+2025-04-28 15:26:18,817 - __main__ - INFO - Loaded global parameters from ./data/global_parameters.json: {'K': 0.046942830571135886, 'sigma_squared': 3.5911050665737987, 'alpha_0': 0.5667213663794652, 'beta_0': 3.3373053296446606}
+2025-04-28 15:26:18,822 - __main__ - INFO - Loaded DA coordinates from ./data/toronto_da.csv
+2025-04-28 15:26:18,860 - csrn.data_loader.spatial_data_loader - INFO - Loaded walking matrix with shape (3742, 3742)
+2025-04-28 15:26:18,899 - csrn.data_loader.spatial_data_loader - INFO - Loaded transit matrix with shape (3742, 3742)
+2025-04-28 15:26:18,938 - csrn.data_loader.spatial_data_loader - INFO - Loaded proximity matrix with shape (3742, 3742)
+2025-04-28 15:26:18,942 - csrn.data_loader.spatial_data_loader - INFO - Loaded DA info with 3742 entries
+2025-04-28 15:26:18,943 - csrn.data_loader.spatial_data_loader - INFO - Loading multi-ethnic data files...
+2025-04-28 15:26:18,983 - csrn.data_loader.spatial_data_loader - INFO - Loaded train_features: 2236 rows
+2025-04-28 15:26:18,984 - csrn.data_loader.spatial_data_loader - INFO - Loaded train_pop_2001: 2236 rows
+2025-04-28 15:26:18,985 - csrn.data_loader.spatial_data_loader - INFO -   - Contains 5 ethnicities: ['China', 'India', 'Philippines', 'Portugal', 'Sri Lanka']
+2025-04-28 15:26:18,986 - csrn.data_loader.spatial_data_loader - INFO - Loaded train_pop_2006: 2236 rows
+2025-04-28 15:26:18,986 - csrn.data_loader.spatial_data_loader - INFO -   - Contains 5 ethnicities: ['China', 'India', 'Philippines', 'Portugal', 'Sri Lanka']
+2025-04-28 15:26:18,997 - csrn.data_loader.spatial_data_loader - INFO - Loaded val_features: 745 rows
+2025-04-28 15:26:18,998 - csrn.data_loader.spatial_data_loader - INFO - Loaded val_pop_2001: 745 rows
+2025-04-28 15:26:18,999 - csrn.data_loader.spatial_data_loader - INFO -   - Contains 5 ethnicities: ['China', 'India', 'Philippines', 'Portugal', 'Sri Lanka']
+2025-04-28 15:26:19,000 - csrn.data_loader.spatial_data_loader - INFO - Loaded val_pop_2006: 745 rows
+2025-04-28 15:26:19,000 - csrn.data_loader.spatial_data_loader - INFO -   - Contains 5 ethnicities: ['China', 'India', 'Philippines', 'Portugal', 'Sri Lanka']
+2025-04-28 15:26:19,013 - csrn.data_loader.spatial_data_loader - INFO - Loaded test_features: 746 rows
+2025-04-28 15:26:19,015 - csrn.data_loader.spatial_data_loader - INFO - Loaded test_pop_2001: 746 rows
+2025-04-28 15:26:19,015 - csrn.data_loader.spatial_data_loader - INFO -   - Contains 5 ethnicities: ['China', 'India', 'Philippines', 'Portugal', 'Sri Lanka']
+2025-04-28 15:26:19,016 - csrn.data_loader.spatial_data_loader - INFO - Loaded test_pop_2006: 746 rows
+2025-04-28 15:26:19,016 - csrn.data_loader.spatial_data_loader - INFO -   - Contains 5 ethnicities: ['China', 'India', 'Philippines', 'Portugal', 'Sri Lanka']
+2025-04-28 15:26:19,016 - csrn.data_loader.spatial_data_loader - INFO - Creating multi-ethnic spatially-aware DataLoaders...
+2025-04-28 15:26:19,016 - csrn.data_loader.spatial_data_loader - INFO - Preprocessing features...
+2025-04-28 15:26:19,033 - csrn.data_loader.spatial_data_loader - INFO - Feature preprocessing complete.
+2025-04-28 15:26:19,037 - csrn.data_loader.spatial_data_loader - INFO - Loaded data with 5 ethnicities: ['China', 'India', 'Philippines', 'Portugal', 'Sri Lanka']
+2025-04-28 15:26:19,244 - csrn.data_loader.spatial_data_loader - INFO - Loaded coordinates for 2236 DAs
+2025-04-28 15:26:19,245 - csrn.data_loader.spatial_data_loader - INFO - Loaded data with 5 ethnicities: ['China', 'India', 'Philippines', 'Portugal', 'Sri Lanka']
+2025-04-28 15:26:19,314 - csrn.data_loader.spatial_data_loader - INFO - Loaded coordinates for 745 DAs
+2025-04-28 15:26:19,315 - csrn.data_loader.spatial_data_loader - INFO - Loaded data with 5 ethnicities: ['China', 'India', 'Philippines', 'Portugal', 'Sri Lanka']
+2025-04-28 15:26:19,383 - csrn.data_loader.spatial_data_loader - INFO - Loaded coordinates for 746 DAs
+2025-04-28 15:26:19,384 - csrn.data_loader.spatial_data_loader - INFO - Created DataLoaders: Train size=2236, Val size=745, Test size=746
+2025-04-28 15:26:19,384 - csrn.data_loader.spatial_data_loader - INFO - Number of ethnicities: 5
+2025-04-28 15:26:19,386 - __main__ - INFO - Processing 5 ethnicities: ['China', 'India', 'Philippines', 'Portugal', 'Sri Lanka']
+2025-04-28 15:26:19,386 - __main__ - INFO - Loading pretrained model from ./model/model.pt
+2025-04-28 15:26:19,418 - __main__ - INFO - Creating model with the same architecture
+2025-04-28 15:26:19,474 - __main__ - ERROR - Error during evaluation: Error(s) in loading state_dict for MultiEthnicSpatialMoEPredictor:
+	Missing key(s) in state_dict: "pde_expert.diffusion_network.4.weight", "pde_expert.diffusion_network.4.bias", "pde_expert.amplification_network.4.weight", "pde_expert.amplification_network.4.bias", "pde_expert.velocity_network.4.weight", "pde_expert.velocity_network.4.bias", "pde_expert.alpha_network.4.weight", "pde_expert.alpha_network.4.bias", "pde_expert.beta_network.4.weight", "pde_expert.beta_network.4.bias", "pde_expert.gamma_network.4.weight", "pde_expert.gamma_network.4.bias", "pde_expert.ethnicity_interaction.1.weight", "pde_expert.ethnicity_interaction.1.bias", "pde_expert.ethnicity_interaction.4.weight", "pde_expert.ethnicity_interaction.4.bias". 
+	Unexpected key(s) in state_dict: "layers.4.weight", "layers.4.bias", "layers.6.weight", "layers.6.bias", "layers.6.running_mean", "layers.6.running_var", "layers.6.num_batches_tracked", "pde_expert.diffusion_network.3.weight", "pde_expert.diffusion_network.3.bias", "pde_expert.amplification_network.3.weight", "pde_expert.amplification_network.3.bias", "pde_expert.velocity_network.3.weight", "pde_expert.velocity_network.3.bias", "pde_expert.alpha_network.3.weight", "pde_expert.alpha_network.3.bias", "pde_expert.beta_network.3.weight", "pde_expert.beta_network.3.bias", "pde_expert.gamma_network.3.weight", "pde_expert.gamma_network.3.bias", "pde_expert.ethnicity_interaction.2.weight", "pde_expert.ethnicity_interaction.2.bias". 
+	size mismatch for feature_embedding.0.weight: copying a param with shape torch.Size([120, 298]) from checkpoint, the shape in current model is torch.Size([60, 298]).
+	size mismatch for feature_embedding.0.bias: copying a param with shape torch.Size([120]) from checkpoint, the shape in current model is torch.Size([60]).
+	size mismatch for feature_embedding.2.weight: copying a param with shape torch.Size([120]) from checkpoint, the shape in current model is torch.Size([60]).
+	size mismatch for feature_embedding.2.bias: copying a param with shape torch.Size([120]) from checkpoint, the shape in current model is torch.Size([60]).
+	size mismatch for feature_embedding.2.running_mean: copying a param with shape torch.Size([120]) from checkpoint, the shape in current model is torch.Size([60]).
+	size mismatch for feature_embedding.2.running_var: copying a param with shape torch.Size([120]) from checkpoint, the shape in current model is torch.Size([60]).
+	size mismatch for expert_router.feature_encoder.0.weight: copying a param with shape torch.Size([120, 298]) from checkpoint, the shape in current model is torch.Size([60, 298]).
+	size mismatch for expert_router.feature_encoder.0.bias: copying a param with shape torch.Size([120]) from checkpoint, the shape in current model is torch.Size([60]).
+	size mismatch for expert_router.feature_encoder.2.weight: copying a param with shape torch.Size([120]) from checkpoint, the shape in current model is torch.Size([60]).
+	size mismatch for expert_router.feature_encoder.2.bias: copying a param with shape torch.Size([120]) from checkpoint, the shape in current model is torch.Size([60]).
+	size mismatch for expert_router.feature_encoder.2.running_mean: copying a param with shape torch.Size([120]) from checkpoint, the shape in current model is torch.Size([60]).
+	size mismatch for expert_router.feature_encoder.2.running_var: copying a param with shape torch.Size([120]) from checkpoint, the shape in current model is torch.Size([60]).
+	size mismatch for expert_router.population_encoder.0.weight: copying a param with shape torch.Size([120, 5]) from checkpoint, the shape in current model is torch.Size([60, 5]).
+	size mismatch for expert_router.population_encoder.0.bias: copying a param with shape torch.Size([120]) from checkpoint, the shape in current model is torch.Size([60]).
+	size mismatch for expert_router.population_encoder.2.weight: copying a param with shape torch.Size([120]) from checkpoint, the shape in current model is torch.Size([60]).
+	size mismatch for expert_router.population_encoder.2.bias: copying a param with shape torch.Size([120]) from checkpoint, the shape in current model is torch.Size([60]).
+	size mismatch for expert_router.population_encoder.2.running_mean: copying a param with shape torch.Size([120]) from checkpoint, the shape in current model is torch.Size([60]).
+	size mismatch for expert_router.population_encoder.2.running_var: copying a param with shape torch.Size([120]) from checkpoint, the shape in current model is torch.Size([60]).
+	size mismatch for expert_router.combined_encoder.0.weight: copying a param with shape torch.Size([120, 240]) from checkpoint, the shape in current model is torch.Size([60, 120]).
+	size mismatch for expert_router.combined_encoder.0.bias: copying a param with shape torch.Size([120]) from checkpoint, the shape in current model is torch.Size([60]).
+	size mismatch for expert_router.combined_encoder.2.weight: copying a param with shape torch.Size([120]) from checkpoint, the shape in current model is torch.Size([60]).
+	size mismatch for expert_router.combined_encoder.2.bias: copying a param with shape torch.Size([120]) from checkpoint, the shape in current model is torch.Size([60]).
+	size mismatch for expert_router.combined_encoder.2.running_mean: copying a param with shape torch.Size([120]) from checkpoint, the shape in current model is torch.Size([60]).
+	size mismatch for expert_router.combined_encoder.2.running_var: copying a param with shape torch.Size([120]) from checkpoint, the shape in current model is torch.Size([60]).
+	size mismatch for expert_router.selector.0.weight: copying a param with shape torch.Size([60, 120]) from checkpoint, the shape in current model is torch.Size([30, 60]).
+	size mismatch for expert_router.selector.0.bias: copying a param with shape torch.Size([60]) from checkpoint, the shape in current model is torch.Size([30]).
+	size mismatch for expert_router.selector.3.weight: copying a param with shape torch.Size([20, 60]) from checkpoint, the shape in current model is torch.Size([20, 30]).
+	size mismatch for expert_router.classifier.0.weight: copying a param with shape torch.Size([20, 120]) from checkpoint, the shape in current model is torch.Size([20, 60]).
+	size mismatch for combine_embeddings.weight: copying a param with shape torch.Size([120, 132]) from checkpoint, the shape in current model is torch.Size([60, 72]).
+	size mismatch for combine_embeddings.bias: copying a param with shape torch.Size([120]) from checkpoint, the shape in current model is torch.Size([60]).
+	size mismatch for spatial_attention.attentions.0.q_proj.weight: copying a param with shape torch.Size([120, 120]) from checkpoint, the shape in current model is torch.Size([60, 60]).
+	size mismatch for spatial_attention.attentions.0.q_proj.bias: copying a param with shape torch.Size([120]) from checkpoint, the shape in current model is torch.Size([60]).
+	size mismatch for spatial_attention.attentions.0.k_proj.weight: copying a param with shape torch.Size([120, 120]) from checkpoint, the shape in current model is torch.Size([60, 60]).
+	size mismatch for spatial_attention.attentions.0.k_proj.bias: copying a param with shape torch.Size([120]) from checkpoint, the shape in current model is torch.Size([60]).
+	size mismatch for spatial_attention.attentions.0.v_proj.weight: copying a param with shape torch.Size([120, 120]) from checkpoint, the shape in current model is torch.Size([60, 60]).
+	size mismatch for spatial_attention.attentions.0.v_proj.bias: copying a param with shape torch.Size([120]) from checkpoint, the shape in current model is torch.Size([60]).
+	size mismatch for spatial_attention.attentions.0.out_proj.weight: copying a param with shape torch.Size([120, 120]) from checkpoint, the shape in current model is torch.Size([60, 60]).
+	size mismatch for spatial_attention.attentions.0.out_proj.bias: copying a param with shape torch.Size([120]) from checkpoint, the shape in current model is torch.Size([60]).
+	size mismatch for spatial_attention.attentions.1.q_proj.weight: copying a param with shape torch.Size([120, 120]) from checkpoint, the shape in current model is torch.Size([60, 60]).
+	size mismatch for spatial_attention.attentions.1.q_proj.bias: copying a param with shape torch.Size([120]) from checkpoint, the shape in current model is torch.Size([60]).
+	size mismatch for spatial_attention.attentions.1.k_proj.weight: copying a param with shape torch.Size([120, 120]) from checkpoint, the shape in current model is torch.Size([60, 60]).
+	size mismatch for spatial_attention.attentions.1.k_proj.bias: copying a param with shape torch.Size([120]) from checkpoint, the shape in current model is torch.Size([60]).
+	size mismatch for spatial_attention.attentions.1.v_proj.weight: copying a param with shape torch.Size([120, 120]) from checkpoint, the shape in current model is torch.Size([60, 60]).
+	size mismatch for spatial_attention.attentions.1.v_proj.bias: copying a param with shape torch.Size([120]) from checkpoint, the shape in current model is torch.Size([60]).
+	size mismatch for spatial_attention.attentions.1.out_proj.weight: copying a param with shape torch.Size([120, 120]) from checkpoint, the shape in current model is torch.Size([60, 60]).
+	size mismatch for spatial_attention.attentions.1.out_proj.bias: copying a param with shape torch.Size([120]) from checkpoint, the shape in current model is torch.Size([60]).
+	size mismatch for spatial_attention.attentions.2.q_proj.weight: copying a param with shape torch.Size([120, 120]) from checkpoint, the shape in current model is torch.Size([60, 60]).
+	size mismatch for spatial_attention.attentions.2.q_proj.bias: copying a param with shape torch.Size([120]) from checkpoint, the shape in current model is torch.Size([60]).
+	size mismatch for spatial_attention.attentions.2.k_proj.weight: copying a param with shape torch.Size([120, 120]) from checkpoint, the shape in current model is torch.Size([60, 60]).
+	size mismatch for spatial_attention.attentions.2.k_proj.bias: copying a param with shape torch.Size([120]) from checkpoint, the shape in current model is torch.Size([60]).
+	size mismatch for spatial_attention.attentions.2.v_proj.weight: copying a param with shape torch.Size([120, 120]) from checkpoint, the shape in current model is torch.Size([60, 60]).
+	size mismatch for spatial_attention.attentions.2.v_proj.bias: copying a param with shape torch.Size([120]) from checkpoint, the shape in current model is torch.Size([60]).
+	size mismatch for spatial_attention.attentions.2.out_proj.weight: copying a param with shape torch.Size([120, 120]) from checkpoint, the shape in current model is torch.Size([60, 60]).
+	size mismatch for spatial_attention.attentions.2.out_proj.bias: copying a param with shape torch.Size([120]) from checkpoint, the shape in current model is torch.Size([60]).
+	size mismatch for spatial_attention.out_proj.weight: copying a param with shape torch.Size([120, 120]) from checkpoint, the shape in current model is torch.Size([60, 60]).
+	size mismatch for spatial_attention.out_proj.bias: copying a param with shape torch.Size([120]) from checkpoint, the shape in current model is torch.Size([60]).
+	size mismatch for layers.0.weight: copying a param with shape torch.Size([60, 120]) from checkpoint, the shape in current model is torch.Size([24, 60]).
+	size mismatch for layers.0.bias: copying a param with shape torch.Size([60]) from checkpoint, the shape in current model is torch.Size([24]).
+	size mismatch for layers.2.weight: copying a param with shape torch.Size([60]) from checkpoint, the shape in current model is torch.Size([24]).
+	size mismatch for layers.2.bias: copying a param with shape torch.Size([60]) from checkpoint, the shape in current model is torch.Size([24]).
+	size mismatch for layers.2.running_mean: copying a param with shape torch.Size([60]) from checkpoint, the shape in current model is torch.Size([24]).
+	size mismatch for layers.2.running_var: copying a param with shape torch.Size([60]) from checkpoint, the shape in current model is torch.Size([24]).
+	size mismatch for ethnicity_interaction.0.weight: copying a param with shape torch.Size([120, 5]) from checkpoint, the shape in current model is torch.Size([60, 5]).
+	size mismatch for ethnicity_interaction.0.bias: copying a param with shape torch.Size([120]) from checkpoint, the shape in current model is torch.Size([60]).
+	size mismatch for ethnicity_interaction.3.weight: copying a param with shape torch.Size([25, 120]) from checkpoint, the shape in current model is torch.Size([25, 60]).
+2025-04-28 15:26:19,476 - __main__ - ERROR - Traceback (most recent call last):
+  File "D:\Navid\Study\Ph.D 2\Thesis\3 - third nature\new_approach\spatial_moe_ind_8_all_eth_2001\spatial_test_model.py", line 146, in main
+    model.load_state_dict(model_state_dict)
+  File "C:\Python312\Lib\site-packages\torch\nn\modules\module.py", line 2584, in load_state_dict
+    raise RuntimeError(
+RuntimeError: Error(s) in loading state_dict for MultiEthnicSpatialMoEPredictor:
+	Missing key(s) in state_dict: "pde_expert.diffusion_network.4.weight", "pde_expert.diffusion_network.4.bias", "pde_expert.amplification_network.4.weight", "pde_expert.amplification_network.4.bias", "pde_expert.velocity_network.4.weight", "pde_expert.velocity_network.4.bias", "pde_expert.alpha_network.4.weight", "pde_expert.alpha_network.4.bias", "pde_expert.beta_network.4.weight", "pde_expert.beta_network.4.bias", "pde_expert.gamma_network.4.weight", "pde_expert.gamma_network.4.bias", "pde_expert.ethnicity_interaction.1.weight", "pde_expert.ethnicity_interaction.1.bias", "pde_expert.ethnicity_interaction.4.weight", "pde_expert.ethnicity_interaction.4.bias". 
+	Unexpected key(s) in state_dict: "layers.4.weight", "layers.4.bias", "layers.6.weight", "layers.6.bias", "layers.6.running_mean", "layers.6.running_var", "layers.6.num_batches_tracked", "pde_expert.diffusion_network.3.weight", "pde_expert.diffusion_network.3.bias", "pde_expert.amplification_network.3.weight", "pde_expert.amplification_network.3.bias", "pde_expert.velocity_network.3.weight", "pde_expert.velocity_network.3.bias", "pde_expert.alpha_network.3.weight", "pde_expert.alpha_network.3.bias", "pde_expert.beta_network.3.weight", "pde_expert.beta_network.3.bias", "pde_expert.gamma_network.3.weight", "pde_expert.gamma_network.3.bias", "pde_expert.ethnicity_interaction.2.weight", "pde_expert.ethnicity_interaction.2.bias". 
+	size mismatch for feature_embedding.0.weight: copying a param with shape torch.Size([120, 298]) from checkpoint, the shape in current model is torch.Size([60, 298]).
+	size mismatch for feature_embedding.0.bias: copying a param with shape torch.Size([120]) from checkpoint, the shape in current model is torch.Size([60]).
+	size mismatch for feature_embedding.2.weight: copying a param with shape torch.Size([120]) from checkpoint, the shape in current model is torch.Size([60]).
+	size mismatch for feature_embedding.2.bias: copying a param with shape torch.Size([120]) from checkpoint, the shape in current model is torch.Size([60]).
+	size mismatch for feature_embedding.2.running_mean: copying a param with shape torch.Size([120]) from checkpoint, the shape in current model is torch.Size([60]).
+	size mismatch for feature_embedding.2.running_var: copying a param with shape torch.Size([120]) from checkpoint, the shape in current model is torch.Size([60]).
+	size mismatch for expert_router.feature_encoder.0.weight: copying a param with shape torch.Size([120, 298]) from checkpoint, the shape in current model is torch.Size([60, 298]).
+	size mismatch for expert_router.feature_encoder.0.bias: copying a param with shape torch.Size([120]) from checkpoint, the shape in current model is torch.Size([60]).
+	size mismatch for expert_router.feature_encoder.2.weight: copying a param with shape torch.Size([120]) from checkpoint, the shape in current model is torch.Size([60]).
+	size mismatch for expert_router.feature_encoder.2.bias: copying a param with shape torch.Size([120]) from checkpoint, the shape in current model is torch.Size([60]).
+	size mismatch for expert_router.feature_encoder.2.running_mean: copying a param with shape torch.Size([120]) from checkpoint, the shape in current model is torch.Size([60]).
+	size mismatch for expert_router.feature_encoder.2.running_var: copying a param with shape torch.Size([120]) from checkpoint, the shape in current model is torch.Size([60]).
+	size mismatch for expert_router.population_encoder.0.weight: copying a param with shape torch.Size([120, 5]) from checkpoint, the shape in current model is torch.Size([60, 5]).
+	size mismatch for expert_router.population_encoder.0.bias: copying a param with shape torch.Size([120]) from checkpoint, the shape in current model is torch.Size([60]).
+	size mismatch for expert_router.population_encoder.2.weight: copying a param with shape torch.Size([120]) from checkpoint, the shape in current model is torch.Size([60]).
+	size mismatch for expert_router.population_encoder.2.bias: copying a param with shape torch.Size([120]) from checkpoint, the shape in current model is torch.Size([60]).
+	size mismatch for expert_router.population_encoder.2.running_mean: copying a param with shape torch.Size([120]) from checkpoint, the shape in current model is torch.Size([60]).
+	size mismatch for expert_router.population_encoder.2.running_var: copying a param with shape torch.Size([120]) from checkpoint, the shape in current model is torch.Size([60]).
+	size mismatch for expert_router.combined_encoder.0.weight: copying a param with shape torch.Size([120, 240]) from checkpoint, the shape in current model is torch.Size([60, 120]).
+	size mismatch for expert_router.combined_encoder.0.bias: copying a param with shape torch.Size([120]) from checkpoint, the shape in current model is torch.Size([60]).
+	size mismatch for expert_router.combined_encoder.2.weight: copying a param with shape torch.Size([120]) from checkpoint, the shape in current model is torch.Size([60]).
+	size mismatch for expert_router.combined_encoder.2.bias: copying a param with shape torch.Size([120]) from checkpoint, the shape in current model is torch.Size([60]).
+	size mismatch for expert_router.combined_encoder.2.running_mean: copying a param with shape torch.Size([120]) from checkpoint, the shape in current model is torch.Size([60]).
+	size mismatch for expert_router.combined_encoder.2.running_var: copying a param with shape torch.Size([120]) from checkpoint, the shape in current model is torch.Size([60]).
+	size mismatch for expert_router.selector.0.weight: copying a param with shape torch.Size([60, 120]) from checkpoint, the shape in current model is torch.Size([30, 60]).
+	size mismatch for expert_router.selector.0.bias: copying a param with shape torch.Size([60]) from checkpoint, the shape in current model is torch.Size([30]).
+	size mismatch for expert_router.selector.3.weight: copying a param with shape torch.Size([20, 60]) from checkpoint, the shape in current model is torch.Size([20, 30]).
+	size mismatch for expert_router.classifier.0.weight: copying a param with shape torch.Size([20, 120]) from checkpoint, the shape in current model is torch.Size([20, 60]).
+	size mismatch for combine_embeddings.weight: copying a param with shape torch.Size([120, 132]) from checkpoint, the shape in current model is torch.Size([60, 72]).
+	size mismatch for combine_embeddings.bias: copying a param with shape torch.Size([120]) from checkpoint, the shape in current model is torch.Size([60]).
+	size mismatch for spatial_attention.attentions.0.q_proj.weight: copying a param with shape torch.Size([120, 120]) from checkpoint, the shape in current model is torch.Size([60, 60]).
+	size mismatch for spatial_attention.attentions.0.q_proj.bias: copying a param with shape torch.Size([120]) from checkpoint, the shape in current model is torch.Size([60]).
+	size mismatch for spatial_attention.attentions.0.k_proj.weight: copying a param with shape torch.Size([120, 120]) from checkpoint, the shape in current model is torch.Size([60, 60]).
+	size mismatch for spatial_attention.attentions.0.k_proj.bias: copying a param with shape torch.Size([120]) from checkpoint, the shape in current model is torch.Size([60]).
+	size mismatch for spatial_attention.attentions.0.v_proj.weight: copying a param with shape torch.Size([120, 120]) from checkpoint, the shape in current model is torch.Size([60, 60]).
+	size mismatch for spatial_attention.attentions.0.v_proj.bias: copying a param with shape torch.Size([120]) from checkpoint, the shape in current model is torch.Size([60]).
+	size mismatch for spatial_attention.attentions.0.out_proj.weight: copying a param with shape torch.Size([120, 120]) from checkpoint, the shape in current model is torch.Size([60, 60]).
+	size mismatch for spatial_attention.attentions.0.out_proj.bias: copying a param with shape torch.Size([120]) from checkpoint, the shape in current model is torch.Size([60]).
+	size mismatch for spatial_attention.attentions.1.q_proj.weight: copying a param with shape torch.Size([120, 120]) from checkpoint, the shape in current model is torch.Size([60, 60]).
+	size mismatch for spatial_attention.attentions.1.q_proj.bias: copying a param with shape torch.Size([120]) from checkpoint, the shape in current model is torch.Size([60]).
+	size mismatch for spatial_attention.attentions.1.k_proj.weight: copying a param with shape torch.Size([120, 120]) from checkpoint, the shape in current model is torch.Size([60, 60]).
+	size mismatch for spatial_attention.attentions.1.k_proj.bias: copying a param with shape torch.Size([120]) from checkpoint, the shape in current model is torch.Size([60]).
+	size mismatch for spatial_attention.attentions.1.v_proj.weight: copying a param with shape torch.Size([120, 120]) from checkpoint, the shape in current model is torch.Size([60, 60]).
+	size mismatch for spatial_attention.attentions.1.v_proj.bias: copying a param with shape torch.Size([120]) from checkpoint, the shape in current model is torch.Size([60]).
+	size mismatch for spatial_attention.attentions.1.out_proj.weight: copying a param with shape torch.Size([120, 120]) from checkpoint, the shape in current model is torch.Size([60, 60]).
+	size mismatch for spatial_attention.attentions.1.out_proj.bias: copying a param with shape torch.Size([120]) from checkpoint, the shape in current model is torch.Size([60]).
+	size mismatch for spatial_attention.attentions.2.q_proj.weight: copying a param with shape torch.Size([120, 120]) from checkpoint, the shape in current model is torch.Size([60, 60]).
+	size mismatch for spatial_attention.attentions.2.q_proj.bias: copying a param with shape torch.Size([120]) from checkpoint, the shape in current model is torch.Size([60]).
+	size mismatch for spatial_attention.attentions.2.k_proj.weight: copying a param with shape torch.Size([120, 120]) from checkpoint, the shape in current model is torch.Size([60, 60]).
+	size mismatch for spatial_attention.attentions.2.k_proj.bias: copying a param with shape torch.Size([120]) from checkpoint, the shape in current model is torch.Size([60]).
+	size mismatch for spatial_attention.attentions.2.v_proj.weight: copying a param with shape torch.Size([120, 120]) from checkpoint, the shape in current model is torch.Size([60, 60]).
+	size mismatch for spatial_attention.attentions.2.v_proj.bias: copying a param with shape torch.Size([120]) from checkpoint, the shape in current model is torch.Size([60]).
+	size mismatch for spatial_attention.attentions.2.out_proj.weight: copying a param with shape torch.Size([120, 120]) from checkpoint, the shape in current model is torch.Size([60, 60]).
+	size mismatch for spatial_attention.attentions.2.out_proj.bias: copying a param with shape torch.Size([120]) from checkpoint, the shape in current model is torch.Size([60]).
+	size mismatch for spatial_attention.out_proj.weight: copying a param with shape torch.Size([120, 120]) from checkpoint, the shape in current model is torch.Size([60, 60]).
+	size mismatch for spatial_attention.out_proj.bias: copying a param with shape torch.Size([120]) from checkpoint, the shape in current model is torch.Size([60]).
+	size mismatch for layers.0.weight: copying a param with shape torch.Size([60, 120]) from checkpoint, the shape in current model is torch.Size([24, 60]).
+	size mismatch for layers.0.bias: copying a param with shape torch.Size([60]) from checkpoint, the shape in current model is torch.Size([24]).
+	size mismatch for layers.2.weight: copying a param with shape torch.Size([60]) from checkpoint, the shape in current model is torch.Size([24]).
+	size mismatch for layers.2.bias: copying a param with shape torch.Size([60]) from checkpoint, the shape in current model is torch.Size([24]).
+	size mismatch for layers.2.running_mean: copying a param with shape torch.Size([60]) from checkpoint, the shape in current model is torch.Size([24]).
+	size mismatch for layers.2.running_var: copying a param with shape torch.Size([60]) from checkpoint, the shape in current model is torch.Size([24]).
+	size mismatch for ethnicity_interaction.0.weight: copying a param with shape torch.Size([120, 5]) from checkpoint, the shape in current model is torch.Size([60, 5]).
+	size mismatch for ethnicity_interaction.0.bias: copying a param with shape torch.Size([120]) from checkpoint, the shape in current model is torch.Size([60]).
+	size mismatch for ethnicity_interaction.3.weight: copying a param with shape torch.Size([25, 120]) from checkpoint, the shape in current model is torch.Size([25, 60]).
+
+2025-04-28 15:26:19,477 - __main__ - INFO - === Multi-Ethnic Spatial MoE Model Evaluation Completed ===
+2025-04-28 15:30:16,869 - __main__ - INFO - === Starting Multi-Ethnic Spatial MoE Model Evaluation ===
+2025-04-28 15:30:16,869 - __main__ - INFO - Arguments: Namespace(data_dir='./data', spatial_dir='./spatial_data', global_params_path='./data/global_parameters.json', da_coordinates_path='./data/toronto_da.csv', scaler='standard', batch_size=64, attention_heads=6, hidden_dim_1_base=20, hidden_dim_2_base=10, hidden_dim_3_base=4, coord_embed_base=2, dropout_rate=0.23754701764520592, colonization_threshold=0.08136253205020105, colonization_expert_weight=0.7769479467834559, colonization_weight=8.05266659034115, jump_threshold=185.56933062720324, jump_expert_weight=0.5681139558702257, jump_weight=8.28611953486444, decline_threshold=74.25427747155432, decline_expert_weight=0.85621601194762, decline_weight=6.769917156070596, pde_expert_weight=0.5394894580093814, pde_weight=5.172326697890094, learning_rate=0.00023689089570144521, weight_decay=6.323728543271069e-07, log_space=False, model_path='./model/model.pt', predictions_path='./predictions/model_evaluation_predictions.csv', metrics_dir='./metrics/evaluation', device='cuda')
+2025-04-28 15:30:16,869 - __main__ - INFO - Loaded global parameters from ./data/global_parameters.json: {'K': 0.046942830571135886, 'sigma_squared': 3.5911050665737987, 'alpha_0': 0.5667213663794652, 'beta_0': 3.3373053296446606}
+2025-04-28 15:30:16,874 - __main__ - INFO - Loaded DA coordinates from ./data/toronto_da.csv
+2025-04-28 15:30:16,913 - csrn.data_loader.spatial_data_loader - INFO - Loaded walking matrix with shape (3742, 3742)
+2025-04-28 15:30:16,951 - csrn.data_loader.spatial_data_loader - INFO - Loaded transit matrix with shape (3742, 3742)
+2025-04-28 15:30:16,992 - csrn.data_loader.spatial_data_loader - INFO - Loaded proximity matrix with shape (3742, 3742)
+2025-04-28 15:30:16,996 - csrn.data_loader.spatial_data_loader - INFO - Loaded DA info with 3742 entries
+2025-04-28 15:30:16,997 - csrn.data_loader.spatial_data_loader - INFO - Loading multi-ethnic data files...
+2025-04-28 15:30:17,041 - csrn.data_loader.spatial_data_loader - INFO - Loaded train_features: 2236 rows
+2025-04-28 15:30:17,043 - csrn.data_loader.spatial_data_loader - INFO - Loaded train_pop_2001: 2236 rows
+2025-04-28 15:30:17,043 - csrn.data_loader.spatial_data_loader - INFO -   - Contains 5 ethnicities: ['China', 'India', 'Philippines', 'Portugal', 'Sri Lanka']
+2025-04-28 15:30:17,044 - csrn.data_loader.spatial_data_loader - INFO - Loaded train_pop_2006: 2236 rows
+2025-04-28 15:30:17,044 - csrn.data_loader.spatial_data_loader - INFO -   - Contains 5 ethnicities: ['China', 'India', 'Philippines', 'Portugal', 'Sri Lanka']
+2025-04-28 15:30:17,056 - csrn.data_loader.spatial_data_loader - INFO - Loaded val_features: 745 rows
+2025-04-28 15:30:17,058 - csrn.data_loader.spatial_data_loader - INFO - Loaded val_pop_2001: 745 rows
+2025-04-28 15:30:17,058 - csrn.data_loader.spatial_data_loader - INFO -   - Contains 5 ethnicities: ['China', 'India', 'Philippines', 'Portugal', 'Sri Lanka']
+2025-04-28 15:30:17,059 - csrn.data_loader.spatial_data_loader - INFO - Loaded val_pop_2006: 745 rows
+2025-04-28 15:30:17,059 - csrn.data_loader.spatial_data_loader - INFO -   - Contains 5 ethnicities: ['China', 'India', 'Philippines', 'Portugal', 'Sri Lanka']
+2025-04-28 15:30:17,072 - csrn.data_loader.spatial_data_loader - INFO - Loaded test_features: 746 rows
+2025-04-28 15:30:17,074 - csrn.data_loader.spatial_data_loader - INFO - Loaded test_pop_2001: 746 rows
+2025-04-28 15:30:17,074 - csrn.data_loader.spatial_data_loader - INFO -   - Contains 5 ethnicities: ['China', 'India', 'Philippines', 'Portugal', 'Sri Lanka']
+2025-04-28 15:30:17,075 - csrn.data_loader.spatial_data_loader - INFO - Loaded test_pop_2006: 746 rows
+2025-04-28 15:30:17,075 - csrn.data_loader.spatial_data_loader - INFO -   - Contains 5 ethnicities: ['China', 'India', 'Philippines', 'Portugal', 'Sri Lanka']
+2025-04-28 15:30:17,075 - csrn.data_loader.spatial_data_loader - INFO - Creating multi-ethnic spatially-aware DataLoaders...
+2025-04-28 15:30:17,075 - csrn.data_loader.spatial_data_loader - INFO - Preprocessing features...
+2025-04-28 15:30:17,095 - csrn.data_loader.spatial_data_loader - INFO - Feature preprocessing complete.
+2025-04-28 15:30:17,098 - csrn.data_loader.spatial_data_loader - INFO - Loaded data with 5 ethnicities: ['China', 'India', 'Philippines', 'Portugal', 'Sri Lanka']
+2025-04-28 15:30:17,300 - csrn.data_loader.spatial_data_loader - INFO - Loaded coordinates for 2236 DAs
+2025-04-28 15:30:17,302 - csrn.data_loader.spatial_data_loader - INFO - Loaded data with 5 ethnicities: ['China', 'India', 'Philippines', 'Portugal', 'Sri Lanka']
+2025-04-28 15:30:17,371 - csrn.data_loader.spatial_data_loader - INFO - Loaded coordinates for 745 DAs
+2025-04-28 15:30:17,373 - csrn.data_loader.spatial_data_loader - INFO - Loaded data with 5 ethnicities: ['China', 'India', 'Philippines', 'Portugal', 'Sri Lanka']
+2025-04-28 15:30:17,444 - csrn.data_loader.spatial_data_loader - INFO - Loaded coordinates for 746 DAs
+2025-04-28 15:30:17,445 - csrn.data_loader.spatial_data_loader - INFO - Created DataLoaders: Train size=2236, Val size=745, Test size=746
+2025-04-28 15:30:17,445 - csrn.data_loader.spatial_data_loader - INFO - Number of ethnicities: 5
+2025-04-28 15:30:17,446 - __main__ - INFO - Processing 5 ethnicities: ['China', 'India', 'Philippines', 'Portugal', 'Sri Lanka']
+2025-04-28 15:30:17,446 - __main__ - INFO - Loading pretrained model from ./model/model.pt
+2025-04-28 15:30:17,508 - __main__ - INFO - Creating model with the same architecture
+2025-04-28 15:30:17,547 - __main__ - ERROR - Error during evaluation: Error(s) in loading state_dict for MultiEthnicSpatialMoEPredictor:
+	Missing key(s) in state_dict: "pde_expert.diffusion_network.4.weight", "pde_expert.diffusion_network.4.bias", "pde_expert.amplification_network.4.weight", "pde_expert.amplification_network.4.bias", "pde_expert.velocity_network.4.weight", "pde_expert.velocity_network.4.bias", "pde_expert.alpha_network.4.weight", "pde_expert.alpha_network.4.bias", "pde_expert.beta_network.4.weight", "pde_expert.beta_network.4.bias", "pde_expert.gamma_network.4.weight", "pde_expert.gamma_network.4.bias", "pde_expert.ethnicity_interaction.1.weight", "pde_expert.ethnicity_interaction.1.bias", "pde_expert.ethnicity_interaction.4.weight", "pde_expert.ethnicity_interaction.4.bias". 
+	Unexpected key(s) in state_dict: "layers.4.weight", "layers.4.bias", "layers.6.weight", "layers.6.bias", "layers.6.running_mean", "layers.6.running_var", "layers.6.num_batches_tracked", "pde_expert.diffusion_network.3.weight", "pde_expert.diffusion_network.3.bias", "pde_expert.amplification_network.3.weight", "pde_expert.amplification_network.3.bias", "pde_expert.velocity_network.3.weight", "pde_expert.velocity_network.3.bias", "pde_expert.alpha_network.3.weight", "pde_expert.alpha_network.3.bias", "pde_expert.beta_network.3.weight", "pde_expert.beta_network.3.bias", "pde_expert.gamma_network.3.weight", "pde_expert.gamma_network.3.bias", "pde_expert.ethnicity_interaction.2.weight", "pde_expert.ethnicity_interaction.2.bias". 
+	size mismatch for feature_embedding.0.weight: copying a param with shape torch.Size([120, 298]) from checkpoint, the shape in current model is torch.Size([60, 298]).
+	size mismatch for feature_embedding.0.bias: copying a param with shape torch.Size([120]) from checkpoint, the shape in current model is torch.Size([60]).
+	size mismatch for feature_embedding.2.weight: copying a param with shape torch.Size([120]) from checkpoint, the shape in current model is torch.Size([60]).
+	size mismatch for feature_embedding.2.bias: copying a param with shape torch.Size([120]) from checkpoint, the shape in current model is torch.Size([60]).
+	size mismatch for feature_embedding.2.running_mean: copying a param with shape torch.Size([120]) from checkpoint, the shape in current model is torch.Size([60]).
+	size mismatch for feature_embedding.2.running_var: copying a param with shape torch.Size([120]) from checkpoint, the shape in current model is torch.Size([60]).
+	size mismatch for expert_router.feature_encoder.0.weight: copying a param with shape torch.Size([120, 298]) from checkpoint, the shape in current model is torch.Size([60, 298]).
+	size mismatch for expert_router.feature_encoder.0.bias: copying a param with shape torch.Size([120]) from checkpoint, the shape in current model is torch.Size([60]).
+	size mismatch for expert_router.feature_encoder.2.weight: copying a param with shape torch.Size([120]) from checkpoint, the shape in current model is torch.Size([60]).
+	size mismatch for expert_router.feature_encoder.2.bias: copying a param with shape torch.Size([120]) from checkpoint, the shape in current model is torch.Size([60]).
+	size mismatch for expert_router.feature_encoder.2.running_mean: copying a param with shape torch.Size([120]) from checkpoint, the shape in current model is torch.Size([60]).
+	size mismatch for expert_router.feature_encoder.2.running_var: copying a param with shape torch.Size([120]) from checkpoint, the shape in current model is torch.Size([60]).
+	size mismatch for expert_router.population_encoder.0.weight: copying a param with shape torch.Size([120, 5]) from checkpoint, the shape in current model is torch.Size([60, 5]).
+	size mismatch for expert_router.population_encoder.0.bias: copying a param with shape torch.Size([120]) from checkpoint, the shape in current model is torch.Size([60]).
+	size mismatch for expert_router.population_encoder.2.weight: copying a param with shape torch.Size([120]) from checkpoint, the shape in current model is torch.Size([60]).
+	size mismatch for expert_router.population_encoder.2.bias: copying a param with shape torch.Size([120]) from checkpoint, the shape in current model is torch.Size([60]).
+	size mismatch for expert_router.population_encoder.2.running_mean: copying a param with shape torch.Size([120]) from checkpoint, the shape in current model is torch.Size([60]).
+	size mismatch for expert_router.population_encoder.2.running_var: copying a param with shape torch.Size([120]) from checkpoint, the shape in current model is torch.Size([60]).
+	size mismatch for expert_router.combined_encoder.0.weight: copying a param with shape torch.Size([120, 240]) from checkpoint, the shape in current model is torch.Size([60, 120]).
+	size mismatch for expert_router.combined_encoder.0.bias: copying a param with shape torch.Size([120]) from checkpoint, the shape in current model is torch.Size([60]).
+	size mismatch for expert_router.combined_encoder.2.weight: copying a param with shape torch.Size([120]) from checkpoint, the shape in current model is torch.Size([60]).
+	size mismatch for expert_router.combined_encoder.2.bias: copying a param with shape torch.Size([120]) from checkpoint, the shape in current model is torch.Size([60]).
+	size mismatch for expert_router.combined_encoder.2.running_mean: copying a param with shape torch.Size([120]) from checkpoint, the shape in current model is torch.Size([60]).
+	size mismatch for expert_router.combined_encoder.2.running_var: copying a param with shape torch.Size([120]) from checkpoint, the shape in current model is torch.Size([60]).
+	size mismatch for expert_router.selector.0.weight: copying a param with shape torch.Size([60, 120]) from checkpoint, the shape in current model is torch.Size([30, 60]).
+	size mismatch for expert_router.selector.0.bias: copying a param with shape torch.Size([60]) from checkpoint, the shape in current model is torch.Size([30]).
+	size mismatch for expert_router.selector.3.weight: copying a param with shape torch.Size([20, 60]) from checkpoint, the shape in current model is torch.Size([20, 30]).
+	size mismatch for expert_router.classifier.0.weight: copying a param with shape torch.Size([20, 120]) from checkpoint, the shape in current model is torch.Size([20, 60]).
+	size mismatch for combine_embeddings.weight: copying a param with shape torch.Size([120, 132]) from checkpoint, the shape in current model is torch.Size([60, 72]).
+	size mismatch for combine_embeddings.bias: copying a param with shape torch.Size([120]) from checkpoint, the shape in current model is torch.Size([60]).
+	size mismatch for spatial_attention.attentions.0.q_proj.weight: copying a param with shape torch.Size([120, 120]) from checkpoint, the shape in current model is torch.Size([60, 60]).
+	size mismatch for spatial_attention.attentions.0.q_proj.bias: copying a param with shape torch.Size([120]) from checkpoint, the shape in current model is torch.Size([60]).
+	size mismatch for spatial_attention.attentions.0.k_proj.weight: copying a param with shape torch.Size([120, 120]) from checkpoint, the shape in current model is torch.Size([60, 60]).
+	size mismatch for spatial_attention.attentions.0.k_proj.bias: copying a param with shape torch.Size([120]) from checkpoint, the shape in current model is torch.Size([60]).
+	size mismatch for spatial_attention.attentions.0.v_proj.weight: copying a param with shape torch.Size([120, 120]) from checkpoint, the shape in current model is torch.Size([60, 60]).
+	size mismatch for spatial_attention.attentions.0.v_proj.bias: copying a param with shape torch.Size([120]) from checkpoint, the shape in current model is torch.Size([60]).
+	size mismatch for spatial_attention.attentions.0.out_proj.weight: copying a param with shape torch.Size([120, 120]) from checkpoint, the shape in current model is torch.Size([60, 60]).
+	size mismatch for spatial_attention.attentions.0.out_proj.bias: copying a param with shape torch.Size([120]) from checkpoint, the shape in current model is torch.Size([60]).
+	size mismatch for spatial_attention.attentions.1.q_proj.weight: copying a param with shape torch.Size([120, 120]) from checkpoint, the shape in current model is torch.Size([60, 60]).
+	size mismatch for spatial_attention.attentions.1.q_proj.bias: copying a param with shape torch.Size([120]) from checkpoint, the shape in current model is torch.Size([60]).
+	size mismatch for spatial_attention.attentions.1.k_proj.weight: copying a param with shape torch.Size([120, 120]) from checkpoint, the shape in current model is torch.Size([60, 60]).
+	size mismatch for spatial_attention.attentions.1.k_proj.bias: copying a param with shape torch.Size([120]) from checkpoint, the shape in current model is torch.Size([60]).
+	size mismatch for spatial_attention.attentions.1.v_proj.weight: copying a param with shape torch.Size([120, 120]) from checkpoint, the shape in current model is torch.Size([60, 60]).
+	size mismatch for spatial_attention.attentions.1.v_proj.bias: copying a param with shape torch.Size([120]) from checkpoint, the shape in current model is torch.Size([60]).
+	size mismatch for spatial_attention.attentions.1.out_proj.weight: copying a param with shape torch.Size([120, 120]) from checkpoint, the shape in current model is torch.Size([60, 60]).
+	size mismatch for spatial_attention.attentions.1.out_proj.bias: copying a param with shape torch.Size([120]) from checkpoint, the shape in current model is torch.Size([60]).
+	size mismatch for spatial_attention.attentions.2.q_proj.weight: copying a param with shape torch.Size([120, 120]) from checkpoint, the shape in current model is torch.Size([60, 60]).
+	size mismatch for spatial_attention.attentions.2.q_proj.bias: copying a param with shape torch.Size([120]) from checkpoint, the shape in current model is torch.Size([60]).
+	size mismatch for spatial_attention.attentions.2.k_proj.weight: copying a param with shape torch.Size([120, 120]) from checkpoint, the shape in current model is torch.Size([60, 60]).
+	size mismatch for spatial_attention.attentions.2.k_proj.bias: copying a param with shape torch.Size([120]) from checkpoint, the shape in current model is torch.Size([60]).
+	size mismatch for spatial_attention.attentions.2.v_proj.weight: copying a param with shape torch.Size([120, 120]) from checkpoint, the shape in current model is torch.Size([60, 60]).
+	size mismatch for spatial_attention.attentions.2.v_proj.bias: copying a param with shape torch.Size([120]) from checkpoint, the shape in current model is torch.Size([60]).
+	size mismatch for spatial_attention.attentions.2.out_proj.weight: copying a param with shape torch.Size([120, 120]) from checkpoint, the shape in current model is torch.Size([60, 60]).
+	size mismatch for spatial_attention.attentions.2.out_proj.bias: copying a param with shape torch.Size([120]) from checkpoint, the shape in current model is torch.Size([60]).
+	size mismatch for spatial_attention.out_proj.weight: copying a param with shape torch.Size([120, 120]) from checkpoint, the shape in current model is torch.Size([60, 60]).
+	size mismatch for spatial_attention.out_proj.bias: copying a param with shape torch.Size([120]) from checkpoint, the shape in current model is torch.Size([60]).
+	size mismatch for layers.0.weight: copying a param with shape torch.Size([60, 120]) from checkpoint, the shape in current model is torch.Size([24, 60]).
+	size mismatch for layers.0.bias: copying a param with shape torch.Size([60]) from checkpoint, the shape in current model is torch.Size([24]).
+	size mismatch for layers.2.weight: copying a param with shape torch.Size([60]) from checkpoint, the shape in current model is torch.Size([24]).
+	size mismatch for layers.2.bias: copying a param with shape torch.Size([60]) from checkpoint, the shape in current model is torch.Size([24]).
+	size mismatch for layers.2.running_mean: copying a param with shape torch.Size([60]) from checkpoint, the shape in current model is torch.Size([24]).
+	size mismatch for layers.2.running_var: copying a param with shape torch.Size([60]) from checkpoint, the shape in current model is torch.Size([24]).
+	size mismatch for ethnicity_interaction.0.weight: copying a param with shape torch.Size([120, 5]) from checkpoint, the shape in current model is torch.Size([60, 5]).
+	size mismatch for ethnicity_interaction.0.bias: copying a param with shape torch.Size([120]) from checkpoint, the shape in current model is torch.Size([60]).
+	size mismatch for ethnicity_interaction.3.weight: copying a param with shape torch.Size([25, 120]) from checkpoint, the shape in current model is torch.Size([25, 60]).
+2025-04-28 15:30:17,549 - __main__ - ERROR - Traceback (most recent call last):
+  File "D:\Navid\Study\Ph.D 2\Thesis\3 - third nature\new_approach\spatial_moe_ind_8_all_eth_2001\spatial_test_model.py", line 146, in main
+    model.load_state_dict(model_state_dict)
+  File "C:\Python312\Lib\site-packages\torch\nn\modules\module.py", line 2584, in load_state_dict
+    raise RuntimeError(
+RuntimeError: Error(s) in loading state_dict for MultiEthnicSpatialMoEPredictor:
+	Missing key(s) in state_dict: "pde_expert.diffusion_network.4.weight", "pde_expert.diffusion_network.4.bias", "pde_expert.amplification_network.4.weight", "pde_expert.amplification_network.4.bias", "pde_expert.velocity_network.4.weight", "pde_expert.velocity_network.4.bias", "pde_expert.alpha_network.4.weight", "pde_expert.alpha_network.4.bias", "pde_expert.beta_network.4.weight", "pde_expert.beta_network.4.bias", "pde_expert.gamma_network.4.weight", "pde_expert.gamma_network.4.bias", "pde_expert.ethnicity_interaction.1.weight", "pde_expert.ethnicity_interaction.1.bias", "pde_expert.ethnicity_interaction.4.weight", "pde_expert.ethnicity_interaction.4.bias". 
+	Unexpected key(s) in state_dict: "layers.4.weight", "layers.4.bias", "layers.6.weight", "layers.6.bias", "layers.6.running_mean", "layers.6.running_var", "layers.6.num_batches_tracked", "pde_expert.diffusion_network.3.weight", "pde_expert.diffusion_network.3.bias", "pde_expert.amplification_network.3.weight", "pde_expert.amplification_network.3.bias", "pde_expert.velocity_network.3.weight", "pde_expert.velocity_network.3.bias", "pde_expert.alpha_network.3.weight", "pde_expert.alpha_network.3.bias", "pde_expert.beta_network.3.weight", "pde_expert.beta_network.3.bias", "pde_expert.gamma_network.3.weight", "pde_expert.gamma_network.3.bias", "pde_expert.ethnicity_interaction.2.weight", "pde_expert.ethnicity_interaction.2.bias". 
+	size mismatch for feature_embedding.0.weight: copying a param with shape torch.Size([120, 298]) from checkpoint, the shape in current model is torch.Size([60, 298]).
+	size mismatch for feature_embedding.0.bias: copying a param with shape torch.Size([120]) from checkpoint, the shape in current model is torch.Size([60]).
+	size mismatch for feature_embedding.2.weight: copying a param with shape torch.Size([120]) from checkpoint, the shape in current model is torch.Size([60]).
+	size mismatch for feature_embedding.2.bias: copying a param with shape torch.Size([120]) from checkpoint, the shape in current model is torch.Size([60]).
+	size mismatch for feature_embedding.2.running_mean: copying a param with shape torch.Size([120]) from checkpoint, the shape in current model is torch.Size([60]).
+	size mismatch for feature_embedding.2.running_var: copying a param with shape torch.Size([120]) from checkpoint, the shape in current model is torch.Size([60]).
+	size mismatch for expert_router.feature_encoder.0.weight: copying a param with shape torch.Size([120, 298]) from checkpoint, the shape in current model is torch.Size([60, 298]).
+	size mismatch for expert_router.feature_encoder.0.bias: copying a param with shape torch.Size([120]) from checkpoint, the shape in current model is torch.Size([60]).
+	size mismatch for expert_router.feature_encoder.2.weight: copying a param with shape torch.Size([120]) from checkpoint, the shape in current model is torch.Size([60]).
+	size mismatch for expert_router.feature_encoder.2.bias: copying a param with shape torch.Size([120]) from checkpoint, the shape in current model is torch.Size([60]).
+	size mismatch for expert_router.feature_encoder.2.running_mean: copying a param with shape torch.Size([120]) from checkpoint, the shape in current model is torch.Size([60]).
+	size mismatch for expert_router.feature_encoder.2.running_var: copying a param with shape torch.Size([120]) from checkpoint, the shape in current model is torch.Size([60]).
+	size mismatch for expert_router.population_encoder.0.weight: copying a param with shape torch.Size([120, 5]) from checkpoint, the shape in current model is torch.Size([60, 5]).
+	size mismatch for expert_router.population_encoder.0.bias: copying a param with shape torch.Size([120]) from checkpoint, the shape in current model is torch.Size([60]).
+	size mismatch for expert_router.population_encoder.2.weight: copying a param with shape torch.Size([120]) from checkpoint, the shape in current model is torch.Size([60]).
+	size mismatch for expert_router.population_encoder.2.bias: copying a param with shape torch.Size([120]) from checkpoint, the shape in current model is torch.Size([60]).
+	size mismatch for expert_router.population_encoder.2.running_mean: copying a param with shape torch.Size([120]) from checkpoint, the shape in current model is torch.Size([60]).
+	size mismatch for expert_router.population_encoder.2.running_var: copying a param with shape torch.Size([120]) from checkpoint, the shape in current model is torch.Size([60]).
+	size mismatch for expert_router.combined_encoder.0.weight: copying a param with shape torch.Size([120, 240]) from checkpoint, the shape in current model is torch.Size([60, 120]).
+	size mismatch for expert_router.combined_encoder.0.bias: copying a param with shape torch.Size([120]) from checkpoint, the shape in current model is torch.Size([60]).
+	size mismatch for expert_router.combined_encoder.2.weight: copying a param with shape torch.Size([120]) from checkpoint, the shape in current model is torch.Size([60]).
+	size mismatch for expert_router.combined_encoder.2.bias: copying a param with shape torch.Size([120]) from checkpoint, the shape in current model is torch.Size([60]).
+	size mismatch for expert_router.combined_encoder.2.running_mean: copying a param with shape torch.Size([120]) from checkpoint, the shape in current model is torch.Size([60]).
+	size mismatch for expert_router.combined_encoder.2.running_var: copying a param with shape torch.Size([120]) from checkpoint, the shape in current model is torch.Size([60]).
+	size mismatch for expert_router.selector.0.weight: copying a param with shape torch.Size([60, 120]) from checkpoint, the shape in current model is torch.Size([30, 60]).
+	size mismatch for expert_router.selector.0.bias: copying a param with shape torch.Size([60]) from checkpoint, the shape in current model is torch.Size([30]).
+	size mismatch for expert_router.selector.3.weight: copying a param with shape torch.Size([20, 60]) from checkpoint, the shape in current model is torch.Size([20, 30]).
+	size mismatch for expert_router.classifier.0.weight: copying a param with shape torch.Size([20, 120]) from checkpoint, the shape in current model is torch.Size([20, 60]).
+	size mismatch for combine_embeddings.weight: copying a param with shape torch.Size([120, 132]) from checkpoint, the shape in current model is torch.Size([60, 72]).
+	size mismatch for combine_embeddings.bias: copying a param with shape torch.Size([120]) from checkpoint, the shape in current model is torch.Size([60]).
+	size mismatch for spatial_attention.attentions.0.q_proj.weight: copying a param with shape torch.Size([120, 120]) from checkpoint, the shape in current model is torch.Size([60, 60]).
+	size mismatch for spatial_attention.attentions.0.q_proj.bias: copying a param with shape torch.Size([120]) from checkpoint, the shape in current model is torch.Size([60]).
+	size mismatch for spatial_attention.attentions.0.k_proj.weight: copying a param with shape torch.Size([120, 120]) from checkpoint, the shape in current model is torch.Size([60, 60]).
+	size mismatch for spatial_attention.attentions.0.k_proj.bias: copying a param with shape torch.Size([120]) from checkpoint, the shape in current model is torch.Size([60]).
+	size mismatch for spatial_attention.attentions.0.v_proj.weight: copying a param with shape torch.Size([120, 120]) from checkpoint, the shape in current model is torch.Size([60, 60]).
+	size mismatch for spatial_attention.attentions.0.v_proj.bias: copying a param with shape torch.Size([120]) from checkpoint, the shape in current model is torch.Size([60]).
+	size mismatch for spatial_attention.attentions.0.out_proj.weight: copying a param with shape torch.Size([120, 120]) from checkpoint, the shape in current model is torch.Size([60, 60]).
+	size mismatch for spatial_attention.attentions.0.out_proj.bias: copying a param with shape torch.Size([120]) from checkpoint, the shape in current model is torch.Size([60]).
+	size mismatch for spatial_attention.attentions.1.q_proj.weight: copying a param with shape torch.Size([120, 120]) from checkpoint, the shape in current model is torch.Size([60, 60]).
+	size mismatch for spatial_attention.attentions.1.q_proj.bias: copying a param with shape torch.Size([120]) from checkpoint, the shape in current model is torch.Size([60]).
+	size mismatch for spatial_attention.attentions.1.k_proj.weight: copying a param with shape torch.Size([120, 120]) from checkpoint, the shape in current model is torch.Size([60, 60]).
+	size mismatch for spatial_attention.attentions.1.k_proj.bias: copying a param with shape torch.Size([120]) from checkpoint, the shape in current model is torch.Size([60]).
+	size mismatch for spatial_attention.attentions.1.v_proj.weight: copying a param with shape torch.Size([120, 120]) from checkpoint, the shape in current model is torch.Size([60, 60]).
+	size mismatch for spatial_attention.attentions.1.v_proj.bias: copying a param with shape torch.Size([120]) from checkpoint, the shape in current model is torch.Size([60]).
+	size mismatch for spatial_attention.attentions.1.out_proj.weight: copying a param with shape torch.Size([120, 120]) from checkpoint, the shape in current model is torch.Size([60, 60]).
+	size mismatch for spatial_attention.attentions.1.out_proj.bias: copying a param with shape torch.Size([120]) from checkpoint, the shape in current model is torch.Size([60]).
+	size mismatch for spatial_attention.attentions.2.q_proj.weight: copying a param with shape torch.Size([120, 120]) from checkpoint, the shape in current model is torch.Size([60, 60]).
+	size mismatch for spatial_attention.attentions.2.q_proj.bias: copying a param with shape torch.Size([120]) from checkpoint, the shape in current model is torch.Size([60]).
+	size mismatch for spatial_attention.attentions.2.k_proj.weight: copying a param with shape torch.Size([120, 120]) from checkpoint, the shape in current model is torch.Size([60, 60]).
+	size mismatch for spatial_attention.attentions.2.k_proj.bias: copying a param with shape torch.Size([120]) from checkpoint, the shape in current model is torch.Size([60]).
+	size mismatch for spatial_attention.attentions.2.v_proj.weight: copying a param with shape torch.Size([120, 120]) from checkpoint, the shape in current model is torch.Size([60, 60]).
+	size mismatch for spatial_attention.attentions.2.v_proj.bias: copying a param with shape torch.Size([120]) from checkpoint, the shape in current model is torch.Size([60]).
+	size mismatch for spatial_attention.attentions.2.out_proj.weight: copying a param with shape torch.Size([120, 120]) from checkpoint, the shape in current model is torch.Size([60, 60]).
+	size mismatch for spatial_attention.attentions.2.out_proj.bias: copying a param with shape torch.Size([120]) from checkpoint, the shape in current model is torch.Size([60]).
+	size mismatch for spatial_attention.out_proj.weight: copying a param with shape torch.Size([120, 120]) from checkpoint, the shape in current model is torch.Size([60, 60]).
+	size mismatch for spatial_attention.out_proj.bias: copying a param with shape torch.Size([120]) from checkpoint, the shape in current model is torch.Size([60]).
+	size mismatch for layers.0.weight: copying a param with shape torch.Size([60, 120]) from checkpoint, the shape in current model is torch.Size([24, 60]).
+	size mismatch for layers.0.bias: copying a param with shape torch.Size([60]) from checkpoint, the shape in current model is torch.Size([24]).
+	size mismatch for layers.2.weight: copying a param with shape torch.Size([60]) from checkpoint, the shape in current model is torch.Size([24]).
+	size mismatch for layers.2.bias: copying a param with shape torch.Size([60]) from checkpoint, the shape in current model is torch.Size([24]).
+	size mismatch for layers.2.running_mean: copying a param with shape torch.Size([60]) from checkpoint, the shape in current model is torch.Size([24]).
+	size mismatch for layers.2.running_var: copying a param with shape torch.Size([60]) from checkpoint, the shape in current model is torch.Size([24]).
+	size mismatch for ethnicity_interaction.0.weight: copying a param with shape torch.Size([120, 5]) from checkpoint, the shape in current model is torch.Size([60, 5]).
+	size mismatch for ethnicity_interaction.0.bias: copying a param with shape torch.Size([120]) from checkpoint, the shape in current model is torch.Size([60]).
+	size mismatch for ethnicity_interaction.3.weight: copying a param with shape torch.Size([25, 120]) from checkpoint, the shape in current model is torch.Size([25, 60]).
+
+2025-04-28 15:30:17,550 - __main__ - INFO - === Multi-Ethnic Spatial MoE Model Evaluation Completed ===
+2025-04-28 15:31:14,677 - __main__ - INFO - === Starting Multi-Ethnic Spatial MoE Model Evaluation ===
+2025-04-28 15:31:14,678 - __main__ - INFO - Arguments: Namespace(data_dir='./data', spatial_dir='./spatial_data', global_params_path='./data/global_parameters.json', da_coordinates_path='./data/toronto_da.csv', scaler='standard', batch_size=64, attention_heads=6, hidden_dim_1_base=20, hidden_dim_2_base=10, hidden_dim_3_base=4, coord_embed_base=2, dropout_rate=0.23754701764520592, colonization_threshold=0.08136253205020105, colonization_expert_weight=0.7769479467834559, colonization_weight=8.05266659034115, jump_threshold=185.56933062720324, jump_expert_weight=0.5681139558702257, jump_weight=8.28611953486444, decline_threshold=74.25427747155432, decline_expert_weight=0.85621601194762, decline_weight=6.769917156070596, pde_expert_weight=0.5394894580093814, pde_weight=5.172326697890094, learning_rate=0.00023689089570144521, weight_decay=6.323728543271069e-07, log_space=False, model_path='./model/model.pt', predictions_path='./predictions/model_evaluation_predictions.csv', metrics_dir='./metrics/evaluation', device='cuda')
+2025-04-28 15:31:14,678 - __main__ - INFO - Loaded global parameters from ./data/global_parameters.json: {'K': 0.046942830571135886, 'sigma_squared': 3.5911050665737987, 'alpha_0': 0.5667213663794652, 'beta_0': 3.3373053296446606}
+2025-04-28 15:31:14,682 - __main__ - INFO - Loaded DA coordinates from ./data/toronto_da.csv
+2025-04-28 15:31:14,716 - csrn.data_loader.spatial_data_loader - INFO - Loaded walking matrix with shape (3742, 3742)
+2025-04-28 15:31:14,757 - csrn.data_loader.spatial_data_loader - INFO - Loaded transit matrix with shape (3742, 3742)
+2025-04-28 15:31:14,800 - csrn.data_loader.spatial_data_loader - INFO - Loaded proximity matrix with shape (3742, 3742)
+2025-04-28 15:31:14,804 - csrn.data_loader.spatial_data_loader - INFO - Loaded DA info with 3742 entries
+2025-04-28 15:31:14,804 - csrn.data_loader.spatial_data_loader - INFO - Loading multi-ethnic data files...
+2025-04-28 15:31:14,840 - csrn.data_loader.spatial_data_loader - INFO - Loaded train_features: 2236 rows
+2025-04-28 15:31:14,842 - csrn.data_loader.spatial_data_loader - INFO - Loaded train_pop_2001: 2236 rows
+2025-04-28 15:31:14,842 - csrn.data_loader.spatial_data_loader - INFO -   - Contains 5 ethnicities: ['China', 'India', 'Philippines', 'Portugal', 'Sri Lanka']
+2025-04-28 15:31:14,843 - csrn.data_loader.spatial_data_loader - INFO - Loaded train_pop_2006: 2236 rows
+2025-04-28 15:31:14,844 - csrn.data_loader.spatial_data_loader - INFO -   - Contains 5 ethnicities: ['China', 'India', 'Philippines', 'Portugal', 'Sri Lanka']
+2025-04-28 15:31:14,855 - csrn.data_loader.spatial_data_loader - INFO - Loaded val_features: 745 rows
+2025-04-28 15:31:14,856 - csrn.data_loader.spatial_data_loader - INFO - Loaded val_pop_2001: 745 rows
+2025-04-28 15:31:14,856 - csrn.data_loader.spatial_data_loader - INFO -   - Contains 5 ethnicities: ['China', 'India', 'Philippines', 'Portugal', 'Sri Lanka']
+2025-04-28 15:31:14,857 - csrn.data_loader.spatial_data_loader - INFO - Loaded val_pop_2006: 745 rows
+2025-04-28 15:31:14,858 - csrn.data_loader.spatial_data_loader - INFO -   - Contains 5 ethnicities: ['China', 'India', 'Philippines', 'Portugal', 'Sri Lanka']
+2025-04-28 15:31:14,870 - csrn.data_loader.spatial_data_loader - INFO - Loaded test_features: 746 rows
+2025-04-28 15:31:14,871 - csrn.data_loader.spatial_data_loader - INFO - Loaded test_pop_2001: 746 rows
+2025-04-28 15:31:14,872 - csrn.data_loader.spatial_data_loader - INFO -   - Contains 5 ethnicities: ['China', 'India', 'Philippines', 'Portugal', 'Sri Lanka']
+2025-04-28 15:31:14,873 - csrn.data_loader.spatial_data_loader - INFO - Loaded test_pop_2006: 746 rows
+2025-04-28 15:31:14,873 - csrn.data_loader.spatial_data_loader - INFO -   - Contains 5 ethnicities: ['China', 'India', 'Philippines', 'Portugal', 'Sri Lanka']
+2025-04-28 15:31:14,873 - csrn.data_loader.spatial_data_loader - INFO - Creating multi-ethnic spatially-aware DataLoaders...
+2025-04-28 15:31:14,874 - csrn.data_loader.spatial_data_loader - INFO - Preprocessing features...
+2025-04-28 15:31:14,891 - csrn.data_loader.spatial_data_loader - INFO - Feature preprocessing complete.
+2025-04-28 15:31:14,894 - csrn.data_loader.spatial_data_loader - INFO - Loaded data with 5 ethnicities: ['China', 'India', 'Philippines', 'Portugal', 'Sri Lanka']
+2025-04-28 15:31:15,098 - csrn.data_loader.spatial_data_loader - INFO - Loaded coordinates for 2236 DAs
+2025-04-28 15:31:15,100 - csrn.data_loader.spatial_data_loader - INFO - Loaded data with 5 ethnicities: ['China', 'India', 'Philippines', 'Portugal', 'Sri Lanka']
+2025-04-28 15:31:15,169 - csrn.data_loader.spatial_data_loader - INFO - Loaded coordinates for 745 DAs
+2025-04-28 15:31:15,170 - csrn.data_loader.spatial_data_loader - INFO - Loaded data with 5 ethnicities: ['China', 'India', 'Philippines', 'Portugal', 'Sri Lanka']
+2025-04-28 15:31:15,237 - csrn.data_loader.spatial_data_loader - INFO - Loaded coordinates for 746 DAs
+2025-04-28 15:31:15,238 - csrn.data_loader.spatial_data_loader - INFO - Created DataLoaders: Train size=2236, Val size=745, Test size=746
+2025-04-28 15:31:15,238 - csrn.data_loader.spatial_data_loader - INFO - Number of ethnicities: 5
+2025-04-28 15:31:15,240 - __main__ - INFO - Processing 5 ethnicities: ['China', 'India', 'Philippines', 'Portugal', 'Sri Lanka']
+2025-04-28 15:31:15,240 - __main__ - INFO - Loading pretrained model from ./model/model.pt
+2025-04-28 15:31:15,272 - __main__ - INFO - Creating model with the same architecture
+2025-04-28 15:31:15,272 - __main__ - ERROR - Error during evaluation: 'colonization_expert_weight'
+2025-04-28 15:31:15,272 - __main__ - ERROR - Traceback (most recent call last):
+  File "D:\Navid\Study\Ph.D 2\Thesis\3 - third nature\new_approach\spatial_moe_ind_8_all_eth_2001\spatial_test_model.py", line 139, in main
+    colonization_expert_weight=model_config['colonization_expert_weight'],
+                               ~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+KeyError: 'colonization_expert_weight'
+
+2025-04-28 15:31:15,272 - __main__ - INFO - === Multi-Ethnic Spatial MoE Model Evaluation Completed ===
+2025-04-28 15:32:16,201 - __main__ - INFO - === Starting Multi-Ethnic Spatial MoE Model Evaluation ===
+2025-04-28 15:32:16,201 - __main__ - INFO - Arguments: Namespace(data_dir='./data', spatial_dir='./spatial_data', global_params_path='./data/global_parameters.json', da_coordinates_path='./data/toronto_da.csv', scaler='standard', batch_size=64, attention_heads=6, hidden_dim_1_base=20, hidden_dim_2_base=10, hidden_dim_3_base=4, coord_embed_base=2, dropout_rate=0.23754701764520592, colonization_threshold=0.08136253205020105, colonization_expert_weight=0.7769479467834559, colonization_weight=8.05266659034115, jump_threshold=185.56933062720324, jump_expert_weight=0.5681139558702257, jump_weight=8.28611953486444, decline_threshold=74.25427747155432, decline_expert_weight=0.85621601194762, decline_weight=6.769917156070596, pde_expert_weight=0.5394894580093814, pde_weight=5.172326697890094, learning_rate=0.00023689089570144521, weight_decay=6.323728543271069e-07, log_space=False, model_path='./model/model.pt', predictions_path='./predictions/model_evaluation_predictions.csv', metrics_dir='./metrics/evaluation', device='cuda')
+2025-04-28 15:32:16,202 - __main__ - INFO - Loaded global parameters from ./data/global_parameters.json: {'K': 0.046942830571135886, 'sigma_squared': 3.5911050665737987, 'alpha_0': 0.5667213663794652, 'beta_0': 3.3373053296446606}
+2025-04-28 15:32:16,208 - __main__ - INFO - Loaded DA coordinates from ./data/toronto_da.csv
+2025-04-28 15:32:16,243 - csrn.data_loader.spatial_data_loader - INFO - Loaded walking matrix with shape (3742, 3742)
+2025-04-28 15:32:16,279 - csrn.data_loader.spatial_data_loader - INFO - Loaded transit matrix with shape (3742, 3742)
+2025-04-28 15:32:16,313 - csrn.data_loader.spatial_data_loader - INFO - Loaded proximity matrix with shape (3742, 3742)
+2025-04-28 15:32:16,317 - csrn.data_loader.spatial_data_loader - INFO - Loaded DA info with 3742 entries
+2025-04-28 15:32:16,317 - csrn.data_loader.spatial_data_loader - INFO - Loading multi-ethnic data files...
+2025-04-28 15:32:16,357 - csrn.data_loader.spatial_data_loader - INFO - Loaded train_features: 2236 rows
+2025-04-28 15:32:16,359 - csrn.data_loader.spatial_data_loader - INFO - Loaded train_pop_2001: 2236 rows
+2025-04-28 15:32:16,360 - csrn.data_loader.spatial_data_loader - INFO -   - Contains 5 ethnicities: ['China', 'India', 'Philippines', 'Portugal', 'Sri Lanka']
+2025-04-28 15:32:16,361 - csrn.data_loader.spatial_data_loader - INFO - Loaded train_pop_2006: 2236 rows
+2025-04-28 15:32:16,361 - csrn.data_loader.spatial_data_loader - INFO -   - Contains 5 ethnicities: ['China', 'India', 'Philippines', 'Portugal', 'Sri Lanka']
+2025-04-28 15:32:16,372 - csrn.data_loader.spatial_data_loader - INFO - Loaded val_features: 745 rows
+2025-04-28 15:32:16,373 - csrn.data_loader.spatial_data_loader - INFO - Loaded val_pop_2001: 745 rows
+2025-04-28 15:32:16,374 - csrn.data_loader.spatial_data_loader - INFO -   - Contains 5 ethnicities: ['China', 'India', 'Philippines', 'Portugal', 'Sri Lanka']
+2025-04-28 15:32:16,375 - csrn.data_loader.spatial_data_loader - INFO - Loaded val_pop_2006: 745 rows
+2025-04-28 15:32:16,376 - csrn.data_loader.spatial_data_loader - INFO -   - Contains 5 ethnicities: ['China', 'India', 'Philippines', 'Portugal', 'Sri Lanka']
+2025-04-28 15:32:16,388 - csrn.data_loader.spatial_data_loader - INFO - Loaded test_features: 746 rows
+2025-04-28 15:32:16,390 - csrn.data_loader.spatial_data_loader - INFO - Loaded test_pop_2001: 746 rows
+2025-04-28 15:32:16,390 - csrn.data_loader.spatial_data_loader - INFO -   - Contains 5 ethnicities: ['China', 'India', 'Philippines', 'Portugal', 'Sri Lanka']
+2025-04-28 15:32:16,391 - csrn.data_loader.spatial_data_loader - INFO - Loaded test_pop_2006: 746 rows
+2025-04-28 15:32:16,391 - csrn.data_loader.spatial_data_loader - INFO -   - Contains 5 ethnicities: ['China', 'India', 'Philippines', 'Portugal', 'Sri Lanka']
+2025-04-28 15:32:16,391 - csrn.data_loader.spatial_data_loader - INFO - Creating multi-ethnic spatially-aware DataLoaders...
+2025-04-28 15:32:16,391 - csrn.data_loader.spatial_data_loader - INFO - Preprocessing features...
+2025-04-28 15:32:16,408 - csrn.data_loader.spatial_data_loader - INFO - Feature preprocessing complete.
+2025-04-28 15:32:16,411 - csrn.data_loader.spatial_data_loader - INFO - Loaded data with 5 ethnicities: ['China', 'India', 'Philippines', 'Portugal', 'Sri Lanka']
+2025-04-28 15:32:16,625 - csrn.data_loader.spatial_data_loader - INFO - Loaded coordinates for 2236 DAs
+2025-04-28 15:32:16,627 - csrn.data_loader.spatial_data_loader - INFO - Loaded data with 5 ethnicities: ['China', 'India', 'Philippines', 'Portugal', 'Sri Lanka']
+2025-04-28 15:32:16,694 - csrn.data_loader.spatial_data_loader - INFO - Loaded coordinates for 745 DAs
+2025-04-28 15:32:16,696 - csrn.data_loader.spatial_data_loader - INFO - Loaded data with 5 ethnicities: ['China', 'India', 'Philippines', 'Portugal', 'Sri Lanka']
+2025-04-28 15:32:16,765 - csrn.data_loader.spatial_data_loader - INFO - Loaded coordinates for 746 DAs
+2025-04-28 15:32:16,766 - csrn.data_loader.spatial_data_loader - INFO - Created DataLoaders: Train size=2236, Val size=745, Test size=746
+2025-04-28 15:32:16,766 - csrn.data_loader.spatial_data_loader - INFO - Number of ethnicities: 5
+2025-04-28 15:32:16,767 - __main__ - INFO - Processing 5 ethnicities: ['China', 'India', 'Philippines', 'Portugal', 'Sri Lanka']
+2025-04-28 15:32:16,767 - __main__ - INFO - Loading pretrained model from ./model/model.pt
+2025-04-28 15:32:16,803 - __main__ - INFO - Creating model with the same architecture
+2025-04-28 15:32:16,804 - __main__ - ERROR - Error during evaluation: 'colonization_expert_weight'
+2025-04-28 15:32:16,804 - __main__ - ERROR - Traceback (most recent call last):
+  File "D:\Navid\Study\Ph.D 2\Thesis\3 - third nature\new_approach\spatial_moe_ind_8_all_eth_2001\spatial_test_model.py", line 139, in main
+    colonization_expert_weight=model_config['colonization_expert_weight'],
+                               ~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+KeyError: 'colonization_expert_weight'
+
+2025-04-28 15:32:16,804 - __main__ - INFO - === Multi-Ethnic Spatial MoE Model Evaluation Completed ===
+2025-04-28 15:39:23,788 - __main__ - INFO - === Starting Multi-Ethnic Spatial MoE Model Evaluation ===
+2025-04-28 15:39:23,788 - __main__ - INFO - Arguments: Namespace(data_dir='./data', spatial_dir='./spatial_data', global_params_path='./data/global_parameters.json', da_coordinates_path='./data/toronto_da.csv', scaler='standard', batch_size=64, attention_heads=6, hidden_dim_1_base=20, hidden_dim_2_base=10, hidden_dim_3_base=4, coord_embed_base=2, dropout_rate=0.23754701764520592, colonization_threshold=0.08136253205020105, colonization_expert_weight=0.7769479467834559, colonization_weight=8.05266659034115, jump_threshold=185.56933062720324, jump_expert_weight=0.5681139558702257, jump_weight=8.28611953486444, decline_threshold=74.25427747155432, decline_expert_weight=0.85621601194762, decline_weight=6.769917156070596, pde_expert_weight=0.5394894580093814, pde_weight=5.172326697890094, learning_rate=0.00023689089570144521, weight_decay=6.323728543271069e-07, log_space=False, model_path='./model/model.pt', predictions_path='./predictions/model_evaluation_predictions.csv', metrics_dir='./metrics/evaluation', device='cuda')
+2025-04-28 15:39:23,788 - __main__ - INFO - Loaded global parameters from ./data/global_parameters.json: {'K': 0.046942830571135886, 'sigma_squared': 3.5911050665737987, 'alpha_0': 0.5667213663794652, 'beta_0': 3.3373053296446606}
+2025-04-28 15:39:23,795 - __main__ - INFO - Loaded DA coordinates from ./data/toronto_da.csv
+2025-04-28 15:39:23,844 - csrn.data_loader.spatial_data_loader - INFO - Loaded walking matrix with shape (3742, 3742)
+2025-04-28 15:39:23,884 - csrn.data_loader.spatial_data_loader - INFO - Loaded transit matrix with shape (3742, 3742)
+2025-04-28 15:39:23,923 - csrn.data_loader.spatial_data_loader - INFO - Loaded proximity matrix with shape (3742, 3742)
+2025-04-28 15:39:23,927 - csrn.data_loader.spatial_data_loader - INFO - Loaded DA info with 3742 entries
+2025-04-28 15:39:23,928 - csrn.data_loader.spatial_data_loader - INFO - Loading multi-ethnic data files...
+2025-04-28 15:39:23,964 - csrn.data_loader.spatial_data_loader - INFO - Loaded train_features: 2236 rows
+2025-04-28 15:39:23,966 - csrn.data_loader.spatial_data_loader - INFO - Loaded train_pop_2001: 2236 rows
+2025-04-28 15:39:23,967 - csrn.data_loader.spatial_data_loader - INFO -   - Contains 5 ethnicities: ['China', 'India', 'Philippines', 'Portugal', 'Sri Lanka']
+2025-04-28 15:39:23,968 - csrn.data_loader.spatial_data_loader - INFO - Loaded train_pop_2006: 2236 rows
+2025-04-28 15:39:23,968 - csrn.data_loader.spatial_data_loader - INFO -   - Contains 5 ethnicities: ['China', 'India', 'Philippines', 'Portugal', 'Sri Lanka']
+2025-04-28 15:39:23,981 - csrn.data_loader.spatial_data_loader - INFO - Loaded val_features: 745 rows
+2025-04-28 15:39:23,982 - csrn.data_loader.spatial_data_loader - INFO - Loaded val_pop_2001: 745 rows
+2025-04-28 15:39:23,982 - csrn.data_loader.spatial_data_loader - INFO -   - Contains 5 ethnicities: ['China', 'India', 'Philippines', 'Portugal', 'Sri Lanka']
+2025-04-28 15:39:23,983 - csrn.data_loader.spatial_data_loader - INFO - Loaded val_pop_2006: 745 rows
+2025-04-28 15:39:23,983 - csrn.data_loader.spatial_data_loader - INFO -   - Contains 5 ethnicities: ['China', 'India', 'Philippines', 'Portugal', 'Sri Lanka']
+2025-04-28 15:39:23,995 - csrn.data_loader.spatial_data_loader - INFO - Loaded test_features: 746 rows
+2025-04-28 15:39:23,997 - csrn.data_loader.spatial_data_loader - INFO - Loaded test_pop_2001: 746 rows
+2025-04-28 15:39:23,997 - csrn.data_loader.spatial_data_loader - INFO -   - Contains 5 ethnicities: ['China', 'India', 'Philippines', 'Portugal', 'Sri Lanka']
+2025-04-28 15:39:23,998 - csrn.data_loader.spatial_data_loader - INFO - Loaded test_pop_2006: 746 rows
+2025-04-28 15:39:23,999 - csrn.data_loader.spatial_data_loader - INFO -   - Contains 5 ethnicities: ['China', 'India', 'Philippines', 'Portugal', 'Sri Lanka']
+2025-04-28 15:39:23,999 - csrn.data_loader.spatial_data_loader - INFO - Creating multi-ethnic spatially-aware DataLoaders...
+2025-04-28 15:39:23,999 - csrn.data_loader.spatial_data_loader - INFO - Preprocessing features...
+2025-04-28 15:39:24,015 - csrn.data_loader.spatial_data_loader - INFO - Feature preprocessing complete.
+2025-04-28 15:39:24,018 - csrn.data_loader.spatial_data_loader - INFO - Loaded data with 5 ethnicities: ['China', 'India', 'Philippines', 'Portugal', 'Sri Lanka']
+2025-04-28 15:39:24,218 - csrn.data_loader.spatial_data_loader - INFO - Loaded coordinates for 2236 DAs
+2025-04-28 15:39:24,219 - csrn.data_loader.spatial_data_loader - INFO - Loaded data with 5 ethnicities: ['China', 'India', 'Philippines', 'Portugal', 'Sri Lanka']
+2025-04-28 15:39:24,286 - csrn.data_loader.spatial_data_loader - INFO - Loaded coordinates for 745 DAs
+2025-04-28 15:39:24,288 - csrn.data_loader.spatial_data_loader - INFO - Loaded data with 5 ethnicities: ['China', 'India', 'Philippines', 'Portugal', 'Sri Lanka']
+2025-04-28 15:39:24,359 - csrn.data_loader.spatial_data_loader - INFO - Loaded coordinates for 746 DAs
+2025-04-28 15:39:24,359 - csrn.data_loader.spatial_data_loader - INFO - Created DataLoaders: Train size=2236, Val size=745, Test size=746
+2025-04-28 15:39:24,360 - csrn.data_loader.spatial_data_loader - INFO - Number of ethnicities: 5
+2025-04-28 15:39:24,361 - __main__ - INFO - Processing 5 ethnicities: ['China', 'India', 'Philippines', 'Portugal', 'Sri Lanka']
+2025-04-28 15:39:24,362 - __main__ - INFO - Loading pretrained model from ./model/model.pt
+2025-04-28 15:39:24,393 - __main__ - INFO - Creating model with the same architecture
+2025-04-28 15:39:24,393 - __main__ - ERROR - Error during evaluation: 'jump_expert_weight'
+2025-04-28 15:39:24,394 - __main__ - ERROR - Traceback (most recent call last):
+  File "D:\Navid\Study\Ph.D 2\Thesis\3 - third nature\new_approach\spatial_moe_ind_8_all_eth_2001\spatial_test_model.py", line 141, in main
+    jump_expert_weight=model_config['jump_expert_weight'],
+                       ~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^
+KeyError: 'jump_expert_weight'
+
+2025-04-28 15:39:24,394 - __main__ - INFO - === Multi-Ethnic Spatial MoE Model Evaluation Completed ===
+2025-04-28 15:39:36,439 - __main__ - INFO - === Starting Multi-Ethnic Spatial MoE Model Evaluation ===
+2025-04-28 15:39:36,439 - __main__ - INFO - Arguments: Namespace(data_dir='./data', spatial_dir='./spatial_data', global_params_path='./data/global_parameters.json', da_coordinates_path='./data/toronto_da.csv', scaler='standard', batch_size=64, attention_heads=6, hidden_dim_1_base=20, hidden_dim_2_base=10, hidden_dim_3_base=4, coord_embed_base=2, dropout_rate=0.23754701764520592, colonization_threshold=0.08136253205020105, colonization_expert_weight=0.7769479467834559, colonization_weight=8.05266659034115, jump_threshold=185.56933062720324, jump_expert_weight=0.5681139558702257, jump_weight=8.28611953486444, decline_threshold=74.25427747155432, decline_expert_weight=0.85621601194762, decline_weight=6.769917156070596, pde_expert_weight=0.5394894580093814, pde_weight=5.172326697890094, learning_rate=0.00023689089570144521, weight_decay=6.323728543271069e-07, log_space=False, model_path='./model/model.pt', predictions_path='./predictions/model_evaluation_predictions.csv', metrics_dir='./metrics/evaluation', device='cuda')
+2025-04-28 15:39:36,440 - __main__ - INFO - Loaded global parameters from ./data/global_parameters.json: {'K': 0.046942830571135886, 'sigma_squared': 3.5911050665737987, 'alpha_0': 0.5667213663794652, 'beta_0': 3.3373053296446606}
+2025-04-28 15:39:36,444 - __main__ - INFO - Loaded DA coordinates from ./data/toronto_da.csv
+2025-04-28 15:39:36,476 - csrn.data_loader.spatial_data_loader - INFO - Loaded walking matrix with shape (3742, 3742)
+2025-04-28 15:39:36,511 - csrn.data_loader.spatial_data_loader - INFO - Loaded transit matrix with shape (3742, 3742)
+2025-04-28 15:39:36,546 - csrn.data_loader.spatial_data_loader - INFO - Loaded proximity matrix with shape (3742, 3742)
+2025-04-28 15:39:36,550 - csrn.data_loader.spatial_data_loader - INFO - Loaded DA info with 3742 entries
+2025-04-28 15:39:36,551 - csrn.data_loader.spatial_data_loader - INFO - Loading multi-ethnic data files...
+2025-04-28 15:39:36,589 - csrn.data_loader.spatial_data_loader - INFO - Loaded train_features: 2236 rows
+2025-04-28 15:39:36,590 - csrn.data_loader.spatial_data_loader - INFO - Loaded train_pop_2001: 2236 rows
+2025-04-28 15:39:36,590 - csrn.data_loader.spatial_data_loader - INFO -   - Contains 5 ethnicities: ['China', 'India', 'Philippines', 'Portugal', 'Sri Lanka']
+2025-04-28 15:39:36,592 - csrn.data_loader.spatial_data_loader - INFO - Loaded train_pop_2006: 2236 rows
+2025-04-28 15:39:36,592 - csrn.data_loader.spatial_data_loader - INFO -   - Contains 5 ethnicities: ['China', 'India', 'Philippines', 'Portugal', 'Sri Lanka']
+2025-04-28 15:39:36,607 - csrn.data_loader.spatial_data_loader - INFO - Loaded val_features: 745 rows
+2025-04-28 15:39:36,609 - csrn.data_loader.spatial_data_loader - INFO - Loaded val_pop_2001: 745 rows
+2025-04-28 15:39:36,609 - csrn.data_loader.spatial_data_loader - INFO -   - Contains 5 ethnicities: ['China', 'India', 'Philippines', 'Portugal', 'Sri Lanka']
+2025-04-28 15:39:36,610 - csrn.data_loader.spatial_data_loader - INFO - Loaded val_pop_2006: 745 rows
+2025-04-28 15:39:36,610 - csrn.data_loader.spatial_data_loader - INFO -   - Contains 5 ethnicities: ['China', 'India', 'Philippines', 'Portugal', 'Sri Lanka']
+2025-04-28 15:39:36,623 - csrn.data_loader.spatial_data_loader - INFO - Loaded test_features: 746 rows
+2025-04-28 15:39:36,625 - csrn.data_loader.spatial_data_loader - INFO - Loaded test_pop_2001: 746 rows
+2025-04-28 15:39:36,625 - csrn.data_loader.spatial_data_loader - INFO -   - Contains 5 ethnicities: ['China', 'India', 'Philippines', 'Portugal', 'Sri Lanka']
+2025-04-28 15:39:36,626 - csrn.data_loader.spatial_data_loader - INFO - Loaded test_pop_2006: 746 rows
+2025-04-28 15:39:36,626 - csrn.data_loader.spatial_data_loader - INFO -   - Contains 5 ethnicities: ['China', 'India', 'Philippines', 'Portugal', 'Sri Lanka']
+2025-04-28 15:39:36,626 - csrn.data_loader.spatial_data_loader - INFO - Creating multi-ethnic spatially-aware DataLoaders...
+2025-04-28 15:39:36,627 - csrn.data_loader.spatial_data_loader - INFO - Preprocessing features...
+2025-04-28 15:39:36,645 - csrn.data_loader.spatial_data_loader - INFO - Feature preprocessing complete.
+2025-04-28 15:39:36,648 - csrn.data_loader.spatial_data_loader - INFO - Loaded data with 5 ethnicities: ['China', 'India', 'Philippines', 'Portugal', 'Sri Lanka']
+2025-04-28 15:39:36,855 - csrn.data_loader.spatial_data_loader - INFO - Loaded coordinates for 2236 DAs
+2025-04-28 15:39:36,857 - csrn.data_loader.spatial_data_loader - INFO - Loaded data with 5 ethnicities: ['China', 'India', 'Philippines', 'Portugal', 'Sri Lanka']
+2025-04-28 15:39:36,928 - csrn.data_loader.spatial_data_loader - INFO - Loaded coordinates for 745 DAs
+2025-04-28 15:39:36,929 - csrn.data_loader.spatial_data_loader - INFO - Loaded data with 5 ethnicities: ['China', 'India', 'Philippines', 'Portugal', 'Sri Lanka']
+2025-04-28 15:39:36,998 - csrn.data_loader.spatial_data_loader - INFO - Loaded coordinates for 746 DAs
+2025-04-28 15:39:36,998 - csrn.data_loader.spatial_data_loader - INFO - Created DataLoaders: Train size=2236, Val size=745, Test size=746
+2025-04-28 15:39:36,998 - csrn.data_loader.spatial_data_loader - INFO - Number of ethnicities: 5
+2025-04-28 15:39:37,000 - __main__ - INFO - Processing 5 ethnicities: ['China', 'India', 'Philippines', 'Portugal', 'Sri Lanka']
+2025-04-28 15:39:37,000 - __main__ - INFO - Loading pretrained model from ./model/model.pt
+2025-04-28 15:39:37,035 - __main__ - INFO - Creating model with the same architecture
+2025-04-28 15:39:37,035 - __main__ - ERROR - Error during evaluation: 'log_space'
+2025-04-28 15:39:37,036 - __main__ - ERROR - Traceback (most recent call last):
+  File "D:\Navid\Study\Ph.D 2\Thesis\3 - third nature\new_approach\spatial_moe_ind_8_all_eth_2001\spatial_test_model.py", line 146, in main
+    log_space=model_config['log_space'],
+              ~~~~~~~~~~~~^^^^^^^^^^^^^
+KeyError: 'log_space'
+
+2025-04-28 15:39:37,036 - __main__ - INFO - === Multi-Ethnic Spatial MoE Model Evaluation Completed ===
+2025-04-28 15:39:46,570 - __main__ - INFO - === Starting Multi-Ethnic Spatial MoE Model Evaluation ===
+2025-04-28 15:39:46,571 - __main__ - INFO - Arguments: Namespace(data_dir='./data', spatial_dir='./spatial_data', global_params_path='./data/global_parameters.json', da_coordinates_path='./data/toronto_da.csv', scaler='standard', batch_size=64, attention_heads=6, hidden_dim_1_base=20, hidden_dim_2_base=10, hidden_dim_3_base=4, coord_embed_base=2, dropout_rate=0.23754701764520592, colonization_threshold=0.08136253205020105, colonization_expert_weight=0.7769479467834559, colonization_weight=8.05266659034115, jump_threshold=185.56933062720324, jump_expert_weight=0.5681139558702257, jump_weight=8.28611953486444, decline_threshold=74.25427747155432, decline_expert_weight=0.85621601194762, decline_weight=6.769917156070596, pde_expert_weight=0.5394894580093814, pde_weight=5.172326697890094, learning_rate=0.00023689089570144521, weight_decay=6.323728543271069e-07, log_space=False, model_path='./model/model.pt', predictions_path='./predictions/model_evaluation_predictions.csv', metrics_dir='./metrics/evaluation', device='cuda')
+2025-04-28 15:39:46,571 - __main__ - INFO - Loaded global parameters from ./data/global_parameters.json: {'K': 0.046942830571135886, 'sigma_squared': 3.5911050665737987, 'alpha_0': 0.5667213663794652, 'beta_0': 3.3373053296446606}
+2025-04-28 15:39:46,575 - __main__ - INFO - Loaded DA coordinates from ./data/toronto_da.csv
+2025-04-28 15:39:46,608 - csrn.data_loader.spatial_data_loader - INFO - Loaded walking matrix with shape (3742, 3742)
+2025-04-28 15:39:46,643 - csrn.data_loader.spatial_data_loader - INFO - Loaded transit matrix with shape (3742, 3742)
+2025-04-28 15:39:46,679 - csrn.data_loader.spatial_data_loader - INFO - Loaded proximity matrix with shape (3742, 3742)
+2025-04-28 15:39:46,683 - csrn.data_loader.spatial_data_loader - INFO - Loaded DA info with 3742 entries
+2025-04-28 15:39:46,683 - csrn.data_loader.spatial_data_loader - INFO - Loading multi-ethnic data files...
+2025-04-28 15:39:46,719 - csrn.data_loader.spatial_data_loader - INFO - Loaded train_features: 2236 rows
+2025-04-28 15:39:46,721 - csrn.data_loader.spatial_data_loader - INFO - Loaded train_pop_2001: 2236 rows
+2025-04-28 15:39:46,721 - csrn.data_loader.spatial_data_loader - INFO -   - Contains 5 ethnicities: ['China', 'India', 'Philippines', 'Portugal', 'Sri Lanka']
+2025-04-28 15:39:46,722 - csrn.data_loader.spatial_data_loader - INFO - Loaded train_pop_2006: 2236 rows
+2025-04-28 15:39:46,722 - csrn.data_loader.spatial_data_loader - INFO -   - Contains 5 ethnicities: ['China', 'India', 'Philippines', 'Portugal', 'Sri Lanka']
+2025-04-28 15:39:46,735 - csrn.data_loader.spatial_data_loader - INFO - Loaded val_features: 745 rows
+2025-04-28 15:39:46,736 - csrn.data_loader.spatial_data_loader - INFO - Loaded val_pop_2001: 745 rows
+2025-04-28 15:39:46,737 - csrn.data_loader.spatial_data_loader - INFO -   - Contains 5 ethnicities: ['China', 'India', 'Philippines', 'Portugal', 'Sri Lanka']
+2025-04-28 15:39:46,738 - csrn.data_loader.spatial_data_loader - INFO - Loaded val_pop_2006: 745 rows
+2025-04-28 15:39:46,738 - csrn.data_loader.spatial_data_loader - INFO -   - Contains 5 ethnicities: ['China', 'India', 'Philippines', 'Portugal', 'Sri Lanka']
+2025-04-28 15:39:46,751 - csrn.data_loader.spatial_data_loader - INFO - Loaded test_features: 746 rows
+2025-04-28 15:39:46,752 - csrn.data_loader.spatial_data_loader - INFO - Loaded test_pop_2001: 746 rows
+2025-04-28 15:39:46,752 - csrn.data_loader.spatial_data_loader - INFO -   - Contains 5 ethnicities: ['China', 'India', 'Philippines', 'Portugal', 'Sri Lanka']
+2025-04-28 15:39:46,753 - csrn.data_loader.spatial_data_loader - INFO - Loaded test_pop_2006: 746 rows
+2025-04-28 15:39:46,753 - csrn.data_loader.spatial_data_loader - INFO -   - Contains 5 ethnicities: ['China', 'India', 'Philippines', 'Portugal', 'Sri Lanka']
+2025-04-28 15:39:46,753 - csrn.data_loader.spatial_data_loader - INFO - Creating multi-ethnic spatially-aware DataLoaders...
+2025-04-28 15:39:46,754 - csrn.data_loader.spatial_data_loader - INFO - Preprocessing features...
+2025-04-28 15:39:46,771 - csrn.data_loader.spatial_data_loader - INFO - Feature preprocessing complete.
+2025-04-28 15:39:46,774 - csrn.data_loader.spatial_data_loader - INFO - Loaded data with 5 ethnicities: ['China', 'India', 'Philippines', 'Portugal', 'Sri Lanka']
+2025-04-28 15:39:46,987 - csrn.data_loader.spatial_data_loader - INFO - Loaded coordinates for 2236 DAs
+2025-04-28 15:39:46,988 - csrn.data_loader.spatial_data_loader - INFO - Loaded data with 5 ethnicities: ['China', 'India', 'Philippines', 'Portugal', 'Sri Lanka']
+2025-04-28 15:39:47,059 - csrn.data_loader.spatial_data_loader - INFO - Loaded coordinates for 745 DAs
+2025-04-28 15:39:47,061 - csrn.data_loader.spatial_data_loader - INFO - Loaded data with 5 ethnicities: ['China', 'India', 'Philippines', 'Portugal', 'Sri Lanka']
+2025-04-28 15:39:47,130 - csrn.data_loader.spatial_data_loader - INFO - Loaded coordinates for 746 DAs
+2025-04-28 15:39:47,131 - csrn.data_loader.spatial_data_loader - INFO - Created DataLoaders: Train size=2236, Val size=745, Test size=746
+2025-04-28 15:39:47,132 - csrn.data_loader.spatial_data_loader - INFO - Number of ethnicities: 5
+2025-04-28 15:39:47,133 - __main__ - INFO - Processing 5 ethnicities: ['China', 'India', 'Philippines', 'Portugal', 'Sri Lanka']
+2025-04-28 15:39:47,133 - __main__ - INFO - Loading pretrained model from ./model/model.pt
+2025-04-28 15:39:47,168 - __main__ - INFO - Creating model with the same architecture
+2025-04-28 15:39:47,199 - __main__ - ERROR - Error during evaluation: Error(s) in loading state_dict for MultiEthnicSpatialMoEPredictor:
+	Missing key(s) in state_dict: "pde_expert.diffusion_network.4.weight", "pde_expert.diffusion_network.4.bias", "pde_expert.amplification_network.4.weight", "pde_expert.amplification_network.4.bias", "pde_expert.velocity_network.4.weight", "pde_expert.velocity_network.4.bias", "pde_expert.alpha_network.4.weight", "pde_expert.alpha_network.4.bias", "pde_expert.beta_network.4.weight", "pde_expert.beta_network.4.bias", "pde_expert.gamma_network.4.weight", "pde_expert.gamma_network.4.bias", "pde_expert.ethnicity_interaction.1.weight", "pde_expert.ethnicity_interaction.1.bias", "pde_expert.ethnicity_interaction.4.weight", "pde_expert.ethnicity_interaction.4.bias". 
+	Unexpected key(s) in state_dict: "layers.4.weight", "layers.4.bias", "layers.6.weight", "layers.6.bias", "layers.6.running_mean", "layers.6.running_var", "layers.6.num_batches_tracked", "pde_expert.diffusion_network.3.weight", "pde_expert.diffusion_network.3.bias", "pde_expert.amplification_network.3.weight", "pde_expert.amplification_network.3.bias", "pde_expert.velocity_network.3.weight", "pde_expert.velocity_network.3.bias", "pde_expert.alpha_network.3.weight", "pde_expert.alpha_network.3.bias", "pde_expert.beta_network.3.weight", "pde_expert.beta_network.3.bias", "pde_expert.gamma_network.3.weight", "pde_expert.gamma_network.3.bias", "pde_expert.ethnicity_interaction.2.weight", "pde_expert.ethnicity_interaction.2.bias". 
+	size mismatch for feature_embedding.0.weight: copying a param with shape torch.Size([120, 298]) from checkpoint, the shape in current model is torch.Size([60, 298]).
+	size mismatch for feature_embedding.0.bias: copying a param with shape torch.Size([120]) from checkpoint, the shape in current model is torch.Size([60]).
+	size mismatch for feature_embedding.2.weight: copying a param with shape torch.Size([120]) from checkpoint, the shape in current model is torch.Size([60]).
+	size mismatch for feature_embedding.2.bias: copying a param with shape torch.Size([120]) from checkpoint, the shape in current model is torch.Size([60]).
+	size mismatch for feature_embedding.2.running_mean: copying a param with shape torch.Size([120]) from checkpoint, the shape in current model is torch.Size([60]).
+	size mismatch for feature_embedding.2.running_var: copying a param with shape torch.Size([120]) from checkpoint, the shape in current model is torch.Size([60]).
+	size mismatch for expert_router.feature_encoder.0.weight: copying a param with shape torch.Size([120, 298]) from checkpoint, the shape in current model is torch.Size([60, 298]).
+	size mismatch for expert_router.feature_encoder.0.bias: copying a param with shape torch.Size([120]) from checkpoint, the shape in current model is torch.Size([60]).
+	size mismatch for expert_router.feature_encoder.2.weight: copying a param with shape torch.Size([120]) from checkpoint, the shape in current model is torch.Size([60]).
+	size mismatch for expert_router.feature_encoder.2.bias: copying a param with shape torch.Size([120]) from checkpoint, the shape in current model is torch.Size([60]).
+	size mismatch for expert_router.feature_encoder.2.running_mean: copying a param with shape torch.Size([120]) from checkpoint, the shape in current model is torch.Size([60]).
+	size mismatch for expert_router.feature_encoder.2.running_var: copying a param with shape torch.Size([120]) from checkpoint, the shape in current model is torch.Size([60]).
+	size mismatch for expert_router.population_encoder.0.weight: copying a param with shape torch.Size([120, 5]) from checkpoint, the shape in current model is torch.Size([60, 5]).
+	size mismatch for expert_router.population_encoder.0.bias: copying a param with shape torch.Size([120]) from checkpoint, the shape in current model is torch.Size([60]).
+	size mismatch for expert_router.population_encoder.2.weight: copying a param with shape torch.Size([120]) from checkpoint, the shape in current model is torch.Size([60]).
+	size mismatch for expert_router.population_encoder.2.bias: copying a param with shape torch.Size([120]) from checkpoint, the shape in current model is torch.Size([60]).
+	size mismatch for expert_router.population_encoder.2.running_mean: copying a param with shape torch.Size([120]) from checkpoint, the shape in current model is torch.Size([60]).
+	size mismatch for expert_router.population_encoder.2.running_var: copying a param with shape torch.Size([120]) from checkpoint, the shape in current model is torch.Size([60]).
+	size mismatch for expert_router.combined_encoder.0.weight: copying a param with shape torch.Size([120, 240]) from checkpoint, the shape in current model is torch.Size([60, 120]).
+	size mismatch for expert_router.combined_encoder.0.bias: copying a param with shape torch.Size([120]) from checkpoint, the shape in current model is torch.Size([60]).
+	size mismatch for expert_router.combined_encoder.2.weight: copying a param with shape torch.Size([120]) from checkpoint, the shape in current model is torch.Size([60]).
+	size mismatch for expert_router.combined_encoder.2.bias: copying a param with shape torch.Size([120]) from checkpoint, the shape in current model is torch.Size([60]).
+	size mismatch for expert_router.combined_encoder.2.running_mean: copying a param with shape torch.Size([120]) from checkpoint, the shape in current model is torch.Size([60]).
+	size mismatch for expert_router.combined_encoder.2.running_var: copying a param with shape torch.Size([120]) from checkpoint, the shape in current model is torch.Size([60]).
+	size mismatch for expert_router.selector.0.weight: copying a param with shape torch.Size([60, 120]) from checkpoint, the shape in current model is torch.Size([30, 60]).
+	size mismatch for expert_router.selector.0.bias: copying a param with shape torch.Size([60]) from checkpoint, the shape in current model is torch.Size([30]).
+	size mismatch for expert_router.selector.3.weight: copying a param with shape torch.Size([20, 60]) from checkpoint, the shape in current model is torch.Size([20, 30]).
+	size mismatch for expert_router.classifier.0.weight: copying a param with shape torch.Size([20, 120]) from checkpoint, the shape in current model is torch.Size([20, 60]).
+	size mismatch for combine_embeddings.weight: copying a param with shape torch.Size([120, 132]) from checkpoint, the shape in current model is torch.Size([60, 72]).
+	size mismatch for combine_embeddings.bias: copying a param with shape torch.Size([120]) from checkpoint, the shape in current model is torch.Size([60]).
+	size mismatch for spatial_attention.attentions.0.q_proj.weight: copying a param with shape torch.Size([120, 120]) from checkpoint, the shape in current model is torch.Size([60, 60]).
+	size mismatch for spatial_attention.attentions.0.q_proj.bias: copying a param with shape torch.Size([120]) from checkpoint, the shape in current model is torch.Size([60]).
+	size mismatch for spatial_attention.attentions.0.k_proj.weight: copying a param with shape torch.Size([120, 120]) from checkpoint, the shape in current model is torch.Size([60, 60]).
+	size mismatch for spatial_attention.attentions.0.k_proj.bias: copying a param with shape torch.Size([120]) from checkpoint, the shape in current model is torch.Size([60]).
+	size mismatch for spatial_attention.attentions.0.v_proj.weight: copying a param with shape torch.Size([120, 120]) from checkpoint, the shape in current model is torch.Size([60, 60]).
+	size mismatch for spatial_attention.attentions.0.v_proj.bias: copying a param with shape torch.Size([120]) from checkpoint, the shape in current model is torch.Size([60]).
+	size mismatch for spatial_attention.attentions.0.out_proj.weight: copying a param with shape torch.Size([120, 120]) from checkpoint, the shape in current model is torch.Size([60, 60]).
+	size mismatch for spatial_attention.attentions.0.out_proj.bias: copying a param with shape torch.Size([120]) from checkpoint, the shape in current model is torch.Size([60]).
+	size mismatch for spatial_attention.attentions.1.q_proj.weight: copying a param with shape torch.Size([120, 120]) from checkpoint, the shape in current model is torch.Size([60, 60]).
+	size mismatch for spatial_attention.attentions.1.q_proj.bias: copying a param with shape torch.Size([120]) from checkpoint, the shape in current model is torch.Size([60]).
+	size mismatch for spatial_attention.attentions.1.k_proj.weight: copying a param with shape torch.Size([120, 120]) from checkpoint, the shape in current model is torch.Size([60, 60]).
+	size mismatch for spatial_attention.attentions.1.k_proj.bias: copying a param with shape torch.Size([120]) from checkpoint, the shape in current model is torch.Size([60]).
+	size mismatch for spatial_attention.attentions.1.v_proj.weight: copying a param with shape torch.Size([120, 120]) from checkpoint, the shape in current model is torch.Size([60, 60]).
+	size mismatch for spatial_attention.attentions.1.v_proj.bias: copying a param with shape torch.Size([120]) from checkpoint, the shape in current model is torch.Size([60]).
+	size mismatch for spatial_attention.attentions.1.out_proj.weight: copying a param with shape torch.Size([120, 120]) from checkpoint, the shape in current model is torch.Size([60, 60]).
+	size mismatch for spatial_attention.attentions.1.out_proj.bias: copying a param with shape torch.Size([120]) from checkpoint, the shape in current model is torch.Size([60]).
+	size mismatch for spatial_attention.attentions.2.q_proj.weight: copying a param with shape torch.Size([120, 120]) from checkpoint, the shape in current model is torch.Size([60, 60]).
+	size mismatch for spatial_attention.attentions.2.q_proj.bias: copying a param with shape torch.Size([120]) from checkpoint, the shape in current model is torch.Size([60]).
+	size mismatch for spatial_attention.attentions.2.k_proj.weight: copying a param with shape torch.Size([120, 120]) from checkpoint, the shape in current model is torch.Size([60, 60]).
+	size mismatch for spatial_attention.attentions.2.k_proj.bias: copying a param with shape torch.Size([120]) from checkpoint, the shape in current model is torch.Size([60]).
+	size mismatch for spatial_attention.attentions.2.v_proj.weight: copying a param with shape torch.Size([120, 120]) from checkpoint, the shape in current model is torch.Size([60, 60]).
+	size mismatch for spatial_attention.attentions.2.v_proj.bias: copying a param with shape torch.Size([120]) from checkpoint, the shape in current model is torch.Size([60]).
+	size mismatch for spatial_attention.attentions.2.out_proj.weight: copying a param with shape torch.Size([120, 120]) from checkpoint, the shape in current model is torch.Size([60, 60]).
+	size mismatch for spatial_attention.attentions.2.out_proj.bias: copying a param with shape torch.Size([120]) from checkpoint, the shape in current model is torch.Size([60]).
+	size mismatch for spatial_attention.out_proj.weight: copying a param with shape torch.Size([120, 120]) from checkpoint, the shape in current model is torch.Size([60, 60]).
+	size mismatch for spatial_attention.out_proj.bias: copying a param with shape torch.Size([120]) from checkpoint, the shape in current model is torch.Size([60]).
+	size mismatch for layers.0.weight: copying a param with shape torch.Size([60, 120]) from checkpoint, the shape in current model is torch.Size([24, 60]).
+	size mismatch for layers.0.bias: copying a param with shape torch.Size([60]) from checkpoint, the shape in current model is torch.Size([24]).
+	size mismatch for layers.2.weight: copying a param with shape torch.Size([60]) from checkpoint, the shape in current model is torch.Size([24]).
+	size mismatch for layers.2.bias: copying a param with shape torch.Size([60]) from checkpoint, the shape in current model is torch.Size([24]).
+	size mismatch for layers.2.running_mean: copying a param with shape torch.Size([60]) from checkpoint, the shape in current model is torch.Size([24]).
+	size mismatch for layers.2.running_var: copying a param with shape torch.Size([60]) from checkpoint, the shape in current model is torch.Size([24]).
+	size mismatch for ethnicity_interaction.0.weight: copying a param with shape torch.Size([120, 5]) from checkpoint, the shape in current model is torch.Size([60, 5]).
+	size mismatch for ethnicity_interaction.0.bias: copying a param with shape torch.Size([120]) from checkpoint, the shape in current model is torch.Size([60]).
+	size mismatch for ethnicity_interaction.3.weight: copying a param with shape torch.Size([25, 120]) from checkpoint, the shape in current model is torch.Size([25, 60]).
+2025-04-28 15:39:47,200 - __main__ - ERROR - Traceback (most recent call last):
+  File "D:\Navid\Study\Ph.D 2\Thesis\3 - third nature\new_approach\spatial_moe_ind_8_all_eth_2001\spatial_test_model.py", line 151, in main
+    model.load_state_dict(model_state_dict)
+  File "C:\Python312\Lib\site-packages\torch\nn\modules\module.py", line 2584, in load_state_dict
+    raise RuntimeError(
+RuntimeError: Error(s) in loading state_dict for MultiEthnicSpatialMoEPredictor:
+	Missing key(s) in state_dict: "pde_expert.diffusion_network.4.weight", "pde_expert.diffusion_network.4.bias", "pde_expert.amplification_network.4.weight", "pde_expert.amplification_network.4.bias", "pde_expert.velocity_network.4.weight", "pde_expert.velocity_network.4.bias", "pde_expert.alpha_network.4.weight", "pde_expert.alpha_network.4.bias", "pde_expert.beta_network.4.weight", "pde_expert.beta_network.4.bias", "pde_expert.gamma_network.4.weight", "pde_expert.gamma_network.4.bias", "pde_expert.ethnicity_interaction.1.weight", "pde_expert.ethnicity_interaction.1.bias", "pde_expert.ethnicity_interaction.4.weight", "pde_expert.ethnicity_interaction.4.bias". 
+	Unexpected key(s) in state_dict: "layers.4.weight", "layers.4.bias", "layers.6.weight", "layers.6.bias", "layers.6.running_mean", "layers.6.running_var", "layers.6.num_batches_tracked", "pde_expert.diffusion_network.3.weight", "pde_expert.diffusion_network.3.bias", "pde_expert.amplification_network.3.weight", "pde_expert.amplification_network.3.bias", "pde_expert.velocity_network.3.weight", "pde_expert.velocity_network.3.bias", "pde_expert.alpha_network.3.weight", "pde_expert.alpha_network.3.bias", "pde_expert.beta_network.3.weight", "pde_expert.beta_network.3.bias", "pde_expert.gamma_network.3.weight", "pde_expert.gamma_network.3.bias", "pde_expert.ethnicity_interaction.2.weight", "pde_expert.ethnicity_interaction.2.bias". 
+	size mismatch for feature_embedding.0.weight: copying a param with shape torch.Size([120, 298]) from checkpoint, the shape in current model is torch.Size([60, 298]).
+	size mismatch for feature_embedding.0.bias: copying a param with shape torch.Size([120]) from checkpoint, the shape in current model is torch.Size([60]).
+	size mismatch for feature_embedding.2.weight: copying a param with shape torch.Size([120]) from checkpoint, the shape in current model is torch.Size([60]).
+	size mismatch for feature_embedding.2.bias: copying a param with shape torch.Size([120]) from checkpoint, the shape in current model is torch.Size([60]).
+	size mismatch for feature_embedding.2.running_mean: copying a param with shape torch.Size([120]) from checkpoint, the shape in current model is torch.Size([60]).
+	size mismatch for feature_embedding.2.running_var: copying a param with shape torch.Size([120]) from checkpoint, the shape in current model is torch.Size([60]).
+	size mismatch for expert_router.feature_encoder.0.weight: copying a param with shape torch.Size([120, 298]) from checkpoint, the shape in current model is torch.Size([60, 298]).
+	size mismatch for expert_router.feature_encoder.0.bias: copying a param with shape torch.Size([120]) from checkpoint, the shape in current model is torch.Size([60]).
+	size mismatch for expert_router.feature_encoder.2.weight: copying a param with shape torch.Size([120]) from checkpoint, the shape in current model is torch.Size([60]).
+	size mismatch for expert_router.feature_encoder.2.bias: copying a param with shape torch.Size([120]) from checkpoint, the shape in current model is torch.Size([60]).
+	size mismatch for expert_router.feature_encoder.2.running_mean: copying a param with shape torch.Size([120]) from checkpoint, the shape in current model is torch.Size([60]).
+	size mismatch for expert_router.feature_encoder.2.running_var: copying a param with shape torch.Size([120]) from checkpoint, the shape in current model is torch.Size([60]).
+	size mismatch for expert_router.population_encoder.0.weight: copying a param with shape torch.Size([120, 5]) from checkpoint, the shape in current model is torch.Size([60, 5]).
+	size mismatch for expert_router.population_encoder.0.bias: copying a param with shape torch.Size([120]) from checkpoint, the shape in current model is torch.Size([60]).
+	size mismatch for expert_router.population_encoder.2.weight: copying a param with shape torch.Size([120]) from checkpoint, the shape in current model is torch.Size([60]).
+	size mismatch for expert_router.population_encoder.2.bias: copying a param with shape torch.Size([120]) from checkpoint, the shape in current model is torch.Size([60]).
+	size mismatch for expert_router.population_encoder.2.running_mean: copying a param with shape torch.Size([120]) from checkpoint, the shape in current model is torch.Size([60]).
+	size mismatch for expert_router.population_encoder.2.running_var: copying a param with shape torch.Size([120]) from checkpoint, the shape in current model is torch.Size([60]).
+	size mismatch for expert_router.combined_encoder.0.weight: copying a param with shape torch.Size([120, 240]) from checkpoint, the shape in current model is torch.Size([60, 120]).
+	size mismatch for expert_router.combined_encoder.0.bias: copying a param with shape torch.Size([120]) from checkpoint, the shape in current model is torch.Size([60]).
+	size mismatch for expert_router.combined_encoder.2.weight: copying a param with shape torch.Size([120]) from checkpoint, the shape in current model is torch.Size([60]).
+	size mismatch for expert_router.combined_encoder.2.bias: copying a param with shape torch.Size([120]) from checkpoint, the shape in current model is torch.Size([60]).
+	size mismatch for expert_router.combined_encoder.2.running_mean: copying a param with shape torch.Size([120]) from checkpoint, the shape in current model is torch.Size([60]).
+	size mismatch for expert_router.combined_encoder.2.running_var: copying a param with shape torch.Size([120]) from checkpoint, the shape in current model is torch.Size([60]).
+	size mismatch for expert_router.selector.0.weight: copying a param with shape torch.Size([60, 120]) from checkpoint, the shape in current model is torch.Size([30, 60]).
+	size mismatch for expert_router.selector.0.bias: copying a param with shape torch.Size([60]) from checkpoint, the shape in current model is torch.Size([30]).
+	size mismatch for expert_router.selector.3.weight: copying a param with shape torch.Size([20, 60]) from checkpoint, the shape in current model is torch.Size([20, 30]).
+	size mismatch for expert_router.classifier.0.weight: copying a param with shape torch.Size([20, 120]) from checkpoint, the shape in current model is torch.Size([20, 60]).
+	size mismatch for combine_embeddings.weight: copying a param with shape torch.Size([120, 132]) from checkpoint, the shape in current model is torch.Size([60, 72]).
+	size mismatch for combine_embeddings.bias: copying a param with shape torch.Size([120]) from checkpoint, the shape in current model is torch.Size([60]).
+	size mismatch for spatial_attention.attentions.0.q_proj.weight: copying a param with shape torch.Size([120, 120]) from checkpoint, the shape in current model is torch.Size([60, 60]).
+	size mismatch for spatial_attention.attentions.0.q_proj.bias: copying a param with shape torch.Size([120]) from checkpoint, the shape in current model is torch.Size([60]).
+	size mismatch for spatial_attention.attentions.0.k_proj.weight: copying a param with shape torch.Size([120, 120]) from checkpoint, the shape in current model is torch.Size([60, 60]).
+	size mismatch for spatial_attention.attentions.0.k_proj.bias: copying a param with shape torch.Size([120]) from checkpoint, the shape in current model is torch.Size([60]).
+	size mismatch for spatial_attention.attentions.0.v_proj.weight: copying a param with shape torch.Size([120, 120]) from checkpoint, the shape in current model is torch.Size([60, 60]).
+	size mismatch for spatial_attention.attentions.0.v_proj.bias: copying a param with shape torch.Size([120]) from checkpoint, the shape in current model is torch.Size([60]).
+	size mismatch for spatial_attention.attentions.0.out_proj.weight: copying a param with shape torch.Size([120, 120]) from checkpoint, the shape in current model is torch.Size([60, 60]).
+	size mismatch for spatial_attention.attentions.0.out_proj.bias: copying a param with shape torch.Size([120]) from checkpoint, the shape in current model is torch.Size([60]).
+	size mismatch for spatial_attention.attentions.1.q_proj.weight: copying a param with shape torch.Size([120, 120]) from checkpoint, the shape in current model is torch.Size([60, 60]).
+	size mismatch for spatial_attention.attentions.1.q_proj.bias: copying a param with shape torch.Size([120]) from checkpoint, the shape in current model is torch.Size([60]).
+	size mismatch for spatial_attention.attentions.1.k_proj.weight: copying a param with shape torch.Size([120, 120]) from checkpoint, the shape in current model is torch.Size([60, 60]).
+	size mismatch for spatial_attention.attentions.1.k_proj.bias: copying a param with shape torch.Size([120]) from checkpoint, the shape in current model is torch.Size([60]).
+	size mismatch for spatial_attention.attentions.1.v_proj.weight: copying a param with shape torch.Size([120, 120]) from checkpoint, the shape in current model is torch.Size([60, 60]).
+	size mismatch for spatial_attention.attentions.1.v_proj.bias: copying a param with shape torch.Size([120]) from checkpoint, the shape in current model is torch.Size([60]).
+	size mismatch for spatial_attention.attentions.1.out_proj.weight: copying a param with shape torch.Size([120, 120]) from checkpoint, the shape in current model is torch.Size([60, 60]).
+	size mismatch for spatial_attention.attentions.1.out_proj.bias: copying a param with shape torch.Size([120]) from checkpoint, the shape in current model is torch.Size([60]).
+	size mismatch for spatial_attention.attentions.2.q_proj.weight: copying a param with shape torch.Size([120, 120]) from checkpoint, the shape in current model is torch.Size([60, 60]).
+	size mismatch for spatial_attention.attentions.2.q_proj.bias: copying a param with shape torch.Size([120]) from checkpoint, the shape in current model is torch.Size([60]).
+	size mismatch for spatial_attention.attentions.2.k_proj.weight: copying a param with shape torch.Size([120, 120]) from checkpoint, the shape in current model is torch.Size([60, 60]).
+	size mismatch for spatial_attention.attentions.2.k_proj.bias: copying a param with shape torch.Size([120]) from checkpoint, the shape in current model is torch.Size([60]).
+	size mismatch for spatial_attention.attentions.2.v_proj.weight: copying a param with shape torch.Size([120, 120]) from checkpoint, the shape in current model is torch.Size([60, 60]).
+	size mismatch for spatial_attention.attentions.2.v_proj.bias: copying a param with shape torch.Size([120]) from checkpoint, the shape in current model is torch.Size([60]).
+	size mismatch for spatial_attention.attentions.2.out_proj.weight: copying a param with shape torch.Size([120, 120]) from checkpoint, the shape in current model is torch.Size([60, 60]).
+	size mismatch for spatial_attention.attentions.2.out_proj.bias: copying a param with shape torch.Size([120]) from checkpoint, the shape in current model is torch.Size([60]).
+	size mismatch for spatial_attention.out_proj.weight: copying a param with shape torch.Size([120, 120]) from checkpoint, the shape in current model is torch.Size([60, 60]).
+	size mismatch for spatial_attention.out_proj.bias: copying a param with shape torch.Size([120]) from checkpoint, the shape in current model is torch.Size([60]).
+	size mismatch for layers.0.weight: copying a param with shape torch.Size([60, 120]) from checkpoint, the shape in current model is torch.Size([24, 60]).
+	size mismatch for layers.0.bias: copying a param with shape torch.Size([60]) from checkpoint, the shape in current model is torch.Size([24]).
+	size mismatch for layers.2.weight: copying a param with shape torch.Size([60]) from checkpoint, the shape in current model is torch.Size([24]).
+	size mismatch for layers.2.bias: copying a param with shape torch.Size([60]) from checkpoint, the shape in current model is torch.Size([24]).
+	size mismatch for layers.2.running_mean: copying a param with shape torch.Size([60]) from checkpoint, the shape in current model is torch.Size([24]).
+	size mismatch for layers.2.running_var: copying a param with shape torch.Size([60]) from checkpoint, the shape in current model is torch.Size([24]).
+	size mismatch for ethnicity_interaction.0.weight: copying a param with shape torch.Size([120, 5]) from checkpoint, the shape in current model is torch.Size([60, 5]).
+	size mismatch for ethnicity_interaction.0.bias: copying a param with shape torch.Size([120]) from checkpoint, the shape in current model is torch.Size([60]).
+	size mismatch for ethnicity_interaction.3.weight: copying a param with shape torch.Size([25, 120]) from checkpoint, the shape in current model is torch.Size([25, 60]).
+
+2025-04-28 15:39:47,201 - __main__ - INFO - === Multi-Ethnic Spatial MoE Model Evaluation Completed ===
